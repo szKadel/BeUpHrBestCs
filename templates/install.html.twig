@@ -1,0 +1,16 @@
+<html lang="eng">
+    <head>
+        <script src="//api.bitrix24.com/api/v1/"></script>
+        {% if result['install'] == true %}
+
+        <script>
+            BX24.init(function(){
+                BX24.installFinish();
+            });
+        </script>
+        <title></title>
+
+        {% endif %}
+    </head>
+
+</html>
