@@ -17,14 +17,12 @@ class MainController extends AbstractController
     }
 
     #[Route('/mail/')]
-    public function sendEmail(EmailService $emailService): Response
+    public function sendEmail(EmailService $emailService):void
     {
         $subject = 'Temat wiadomości';
         $to = 'szymon@beupsoft.pl';
         $body = 'Treść wiadomości.';
 
         $emailService->sendEmail($subject, $to, $body);
-
-        return new Response("test");
     }
 }
