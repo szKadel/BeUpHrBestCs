@@ -10,6 +10,6 @@ class MainController
     #[Route('/',name: 'app_main_mainpage')]
     public function mainPage(): RedirectResponse
     {
-        return new RedirectResponse($_SERVER['SERVER_NAME'].'/view/');
+        return new RedirectResponse('/view/');
     }
 }
