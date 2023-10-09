@@ -95,21 +95,21 @@ class Vacation
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?string $comment = null;
 
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column(type: "datetime",nullable: true)]
     #[Groups(['vacationRequest:read'])]
-    private $createdAt;
+    private $createdAt = null;
 
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column(type: "datetime",nullable: true)]
     #[Groups(['vacationRequest:read'])]
-    private $updatedAt;
+    private $updatedAt = null;
 
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column(type: "datetime",nullable: true)]
     #[Groups(['vacationRequest:read'])]
-    private $acceptedAt;
+    private $acceptedAt = null;
 
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column(type: "datetime",nullable: true)]
     #[Groups(['vacationRequest:read'])]
-    private $anulatedAt;
+    private $anulatedAt = null;
 
 
     public function __construct()
@@ -120,14 +120,23 @@ class Vacation
     #[ORM\PreUpdate]
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
-        if($this->type->getId() == 1 || $this->type->getId() == 11) {
+        if($this->type?->getId() == 1 || $this->type->getId() == 11) {
             throw new BadRequestException("Nie można zaakceptować wniosku o tym typie. Określ typ wniosku.",403);
         }
-
 
         if($this->type->getName() == "Inny" && $eventArgs->getNewValue("status")->getName() == "Zaakceptowany")
         {
             throw new BadRequestException("Nie można zaakceptować ani odrzucić wniosku o typie urlopu inny, zmień typ i spróbuj ponownie.",403);
+        }
+
+        if($this->status?->getName() == "Anulowany")
+        {
+            $this->setAnulatedAt(new \DateTime());;
+        }
+
+        if($this->status?->getName() == "Zaakceptowany")
+        {
+            $this->setAcceptedAt(new \DateTime());
         }
     }
 

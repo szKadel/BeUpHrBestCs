@@ -165,6 +165,8 @@ class VacationRequestResourceTest extends KernelTestCase
                 ]
             ])
             ->assertStatus(200);
+
+
     }
 
     public function testVacationReplacement()

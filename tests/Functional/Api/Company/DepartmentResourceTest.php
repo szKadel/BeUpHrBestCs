@@ -20,7 +20,6 @@ class DepartmentResourceTest extends KernelTestCase
             ->get('/api/departments')
             ->assertStatus(401);
 
-
         $employee = EmployeeFactory::createOne();
         $user = UserFactory::createOne(['employee' => $employee]);
 
