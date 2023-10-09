@@ -95,11 +95,26 @@ class Vacation
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?string $comment = null;
 
-    #[ORM\PrePersist]
-    public function prePersist(PrePersistEventArgs $args):void
+    #[ORM\Column(type: "datetime")]
+    #[Groups(['vacationRequest:read'])]
+    private $createdAt;
+
+    #[ORM\Column(type: "datetime")]
+    #[Groups(['vacationRequest:read'])]
+    private $updatedAt;
+
+    #[ORM\Column(type: "datetime")]
+    #[Groups(['vacationRequest:read'])]
+    private $acceptedAt;
+
+    #[ORM\Column(type: "datetime")]
+    #[Groups(['vacationRequest:read'])]
+    private $anulatedAt;
+
+
+    public function __construct()
     {
-
-
+        $this->setCreatedAt(new \DateTime());
     }
 
     #[ORM\PreUpdate]
@@ -108,6 +123,7 @@ class Vacation
         if($this->type->getId() == 1 || $this->type->getId() == 11) {
             throw new BadRequestException("Nie można zaakceptować wniosku o tym typie. Określ typ wniosku.",403);
         }
+
 
         if($this->type->getName() == "Inny" && $eventArgs->getNewValue("status")->getName() == "Zaakceptowany")
         {
@@ -215,5 +231,69 @@ class Vacation
 
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAnulatedAt()
+    {
+        return $this->anulatedAt;
+    }
+
+    /**
+     * @param mixed $anulatedAt
+     */
+    public function setAnulatedAt($anulatedAt): void
+    {
+        $this->anulatedAt = $anulatedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param mixed $updatedAt
+     */
+    public function setUpdatedAt($updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAcceptedAt()
+    {
+        return $this->acceptedAt;
+    }
+
+    /**
+     * @param mixed $acceptedAt
+     */
+    public function setAcceptedAt($acceptedAt): void
+    {
+        $this->acceptedAt = $acceptedAt;
     }
 }

@@ -69,4 +69,27 @@ class EmployeeResourceTest extends KernelTestCase
             ])
             ->assertStatus(200);
     }
+
+    public function testVacationLoadWhenEmployeeAdd()
+    {
+        $department = DepartmentFactory::createOne();
+
+        $employee = EmployeeFactory::createOne(['department'=>$department]);
+        $user = UserFactory::createOne(['roles'=>['ROLE_ADMIN'],'employee' => $employee]);
+
+        $employee2 = $this->browser()
+            ->actingAs($user)
+            ->post('/api/employees',['json'=>[
+                'name'=>'test',
+                'surname'=>'test',
+                'department' => 'api/departments/'.$department->getId()
+            ]
+            ])
+            ->assertStatus(201);
+
+        $this->browser()
+            ->actingAs($user)
+            ->get('/api/employees')
+            ->dump();
+    }
 }

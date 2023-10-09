@@ -10,6 +10,6 @@ class MainController
     #[Route('/',name: 'app_main_mainpage')]
     public function mainPage(): RedirectResponse
     {
-        return new RedirectResponse('https://solarstudiohr.beupsoft.pl/view/');
+        return new RedirectResponse('');
     }
 }
