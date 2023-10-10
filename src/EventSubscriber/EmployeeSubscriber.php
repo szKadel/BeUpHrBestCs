@@ -29,7 +29,7 @@ final class EmployeeSubscriber implements EventSubscriberInterface
         $book = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
 
-        $this->mailer ->sendEmail("Test","szymonkadelski@gmail.com","test ".json_encode($book->getId()?? "no"));
+        $this->mailer ->sendEmail("Test","szymonkadelski@gmail.com","test ".json_encode($book));
 
 
     }
