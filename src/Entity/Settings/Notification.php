@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
 )]
-class Notifications
+class Notification
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
