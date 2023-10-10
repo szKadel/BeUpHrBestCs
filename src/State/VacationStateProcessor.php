@@ -77,7 +77,7 @@ class VacationStateProcessor implements ProcessorInterface
                                 $this->sendNotificationEmail(
                                     "Testowa Widomość o dla zastępcy",
                                     $email,
-                                    "Zostałeś przypisany jako zastępstwo za użytkownika ".$this->security->getUser()->getUserIdentifier()
+                                    "Zostałeś przypisany jako zastępstwo za użytkownika ".$this->security->getUser()->getEmployee()->getName()." ".$this->security->getUser()->getEmployee()->getSurname()
                                 );
                             }
                         }
@@ -90,7 +90,7 @@ class VacationStateProcessor implements ProcessorInterface
                             $this->sendNotificationEmail(
                                 "Testowa Widomość dla Moda",
                                 "szymonkadelski@gmail.com",
-                                "Użytkownik ".$this->security->getUser()->getUserIdentifier()." utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
+                                "Użytkownik ".$this->security->getUser()->getEmployee()->getName()." ".$this->security->getUser()->getEmployee()->getSurname()." utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
                             );
                         }
                     }
@@ -108,7 +108,7 @@ class VacationStateProcessor implements ProcessorInterface
                         $this->sendNotificationEmail(
                             "Testowa Widomość dla Admina",
                             $admin->getEmail(),
-                            "Wniosek użytkownika ".$this->security->getUser()->getUserIdentifier()." został zaakceptowany."
+                            "Wniosek użytkownika ".$this->security->getUser()->getEmployee()->getName()." ".$this->security->getUser()->getEmployee()->getSurname()." został zaakceptowany."
                         );
                     }
                 }
