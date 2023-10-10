@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Company\Employee;
 use App\Entity\Vacation\Vacation;
+use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 
 class EmployeeStateProcessor implements ProcessorInterface
 {
@@ -14,7 +15,7 @@ class EmployeeStateProcessor implements ProcessorInterface
     {
         if($data instanceof Employee) {
             if ($operation instanceof Post) {
-                $this->addEmployee();
+
             }
         }
     }

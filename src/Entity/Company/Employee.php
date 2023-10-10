@@ -21,6 +21,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
