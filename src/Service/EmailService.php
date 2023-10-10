@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -21,7 +22,10 @@ class EmailService
             ->to($to)
             ->subject($subject)
             ->html($body);
+        try {
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
 
-        $this->mailer->send($email);
+        }
     }
 }
