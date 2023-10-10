@@ -7,6 +7,7 @@ use App\Entity\Company\Employee;
 use App\Service\EmailService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Mime\Email;
@@ -24,12 +25,12 @@ final class EmployeeSubscriber implements EventSubscriberInterface
             KernelEvents::RESPONSE => ['sendMail', EventPriorities::POST_WRITE],
         ];
     }
-    public function sendMail(ViewEvent $event): void
+    public function sendMail(ResponseEvent $event): void
     {
-        $book = $event->getControllerResult();
+        $book = $event->getResponse();
         $method = $event->getRequest()->getMethod();
 
-        $this->mailer ->sendEmail("Test","szymonkadelski@gmail.com","test ");
+        $this->mailer ->sendEmail("Test","szymonkadelski@gmail.com","test ".json_encode($book));
 
 
     }
