@@ -8,11 +8,11 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Repository\Settings\NotificationsRepository;
+use App\Repository\Settings\NotificationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: NotificationsRepository::class)]
+#[ORM\Entity(repositoryClass: NotificationRepository::class)]
 #[ApiResource(
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['notificationSetting:read']],security: "is_granted('ROLE_ADMIN')"),
@@ -95,5 +95,37 @@ class Notification
         $this->NotificateUserOnVacationRequestAccept = $NotificateUserOnVacationRequestAccept;
 
         return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNotifcateAdminOnAcceptVacation(): ?bool
+    {
+        return $this->NotifcateAdminOnAcceptVacation;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNotificateDepartmentModOnCreatedVacation(): ?bool
+    {
+        return $this->NotificateDepartmentModOnCreatedVacation;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNotificateReplacmentUser(): ?bool
+    {
+        return $this->NotificateReplacmentUser;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNotificateUserOnVacationRequestAccept(): ?bool
+    {
+        return $this->NotificateUserOnVacationRequestAccept;
     }
 }

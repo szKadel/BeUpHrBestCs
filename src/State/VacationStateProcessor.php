@@ -10,6 +10,8 @@ use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
 use App\Entity\Vacation\VacationStatus;
 use App\Repository\EmployeeVacationLimitRepository;
+use App\Repository\Settings\NotificationRepository;
+use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
 use App\Repository\VacationStatusRepository;
 use App\Service\EmailService;
@@ -27,7 +29,9 @@ class VacationStateProcessor implements ProcessorInterface
         private VacationRepository $vacationRepository,
         private VacationStatusRepository $vacationStatusRepository,
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
-        private EmailService $emailService
+        private EmailService $emailService,
+        private NotificationRepository $notificationRepository,
+        private UserRepository $userRepository
     )
     {
 
@@ -40,7 +44,6 @@ class VacationStateProcessor implements ProcessorInterface
         array $context = []
     ): void
     {
-        $this->sendNotificationEmail();
         if($data instanceof Vacation) {
             if($operation instanceof Post) {
                 if ($this->security->getUser()) {
@@ -66,11 +69,48 @@ class VacationStateProcessor implements ProcessorInterface
                             $data->getDateFrom(),
                             $data->getDateTo()
                         );
+
+                        if($this->notificationRepository->getNotificationsSettings()?->getNotificateReplacmentUser())
+                        {
+                            $email = $data->getReplacement()->getUser()?->getEmail();
+                            if($email != null ) {
+                                $this->sendNotificationEmail(
+                                    "Testowa Widomość o dla zastępcy",
+                                    $email,
+                                    "Zostałeś przypisany jako zastępstwo za użytkownika ".$this->security->getUser()->getUserIdentifier()
+                                );
+                            }
+                        }
                     }
+
+                    if($this->notificationRepository->getNotificationsSettings()?->getNotificateDepartmentModOnCreatedVacation())
+                    {
+                        $mods = $this->userRepository->getModerators();
+                        foreach ($mods as $mod) {
+                            $this->sendNotificationEmail(
+                                "Testowa Widomość dla Moda",
+                                "szymonkadelski@gmail.com",
+                                "Użytkownik ".$this->security->getUser()->getUserIdentifier()." utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
+                            );
+                        }
+                    }
+
                 }
             } elseif ($operation instanceof Put) {
                 if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
                     $this->checkVacationLimits($data);
+                }
+
+                if($this->notificationRepository->getNotificationsSettings()?->getNotifcateAdminOnAcceptVacation())
+                {
+                    $admins = $this->userRepository->getAdmins();
+                    foreach ($admins as $admin) {
+                        $this->sendNotificationEmail(
+                            "Testowa Widomość dla Admina",
+                            $admin->getEmail(),
+                            "Wniosek użytkownika ".$this->security->getUser()->getUserIdentifier()." został zaakceptowany."
+                        );
+                    }
                 }
             }
         }
@@ -88,16 +128,11 @@ class VacationStateProcessor implements ProcessorInterface
         }
 
         $this->innerProcessor->process($data, $operation, $uriVariables, $context);
-
     }
 
-    private function sendNotificationEmail()
+    private function sendNotificationEmail($title, $to, $body)
     {
-        $subject = 'Temat wiadomości';
-        $to = 'szymonkadelski@gmail.com';
-        $body = 'Treść wiadomości.';
-
-        $this->emailService->sendEmail($subject, $to, $body);
+        $this->emailService->sendEmail($title, $to, $body);
 
         return new JsonResponse(['result'=>true]);
     }

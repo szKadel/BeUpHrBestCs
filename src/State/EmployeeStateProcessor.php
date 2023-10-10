@@ -23,4 +23,9 @@ class EmployeeStateProcessor implements ProcessorInterface
     {
 
     }
+
+    private function addVacationLimits()
+    {
+
+    }
 }

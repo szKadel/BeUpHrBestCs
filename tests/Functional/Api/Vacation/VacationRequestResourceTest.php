@@ -4,11 +4,13 @@ namespace App\Tests\Functional\Api\Vacation;
 
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
+use App\Factory\Settings\NotificationFactory;
 use App\Factory\UserFactory;
 use App\Factory\Vacation\VacationFactory;
 use App\Factory\Vacation\VacationLimitsFactory;
 use App\Factory\Vacation\VacationStatusFactory;
 use App\Factory\VacationTypesFactory;
+use App\Repository\Settings\NotificationRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -75,11 +77,11 @@ class VacationRequestResourceTest extends KernelTestCase
 
         $mod = UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
 
-        $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_USER']]);
+        $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_ADMIN']]);
 
          VacationTypesFactory::createOne();
         $vacationType = VacationTypesFactory::createOne();
-
+        NotificationFactory::createOne();
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
 
