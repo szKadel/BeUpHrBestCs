@@ -12,9 +12,11 @@ use App\Entity\Vacation\VacationStatus;
 use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\VacationRepository;
 use App\Repository\VacationStatusRepository;
+use App\Service\EmailService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[AsDecorator('api_platform.doctrine.orm.state.persist_processor')]
 class VacationStateProcessor implements ProcessorInterface
@@ -24,7 +26,8 @@ class VacationStateProcessor implements ProcessorInterface
         private Security $security,
         private VacationRepository $vacationRepository,
         private VacationStatusRepository $vacationStatusRepository,
-        private EmployeeVacationLimitRepository $employeeVacationLimitRepository
+        private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
+        private EmailService $emailService
     )
     {
 
@@ -37,6 +40,7 @@ class VacationStateProcessor implements ProcessorInterface
         array $context = []
     ): void
     {
+        $this->sendNotificationEmail();
         if($data instanceof Vacation) {
             if($operation instanceof Post) {
                 if ($this->security->getUser()) {
@@ -85,6 +89,17 @@ class VacationStateProcessor implements ProcessorInterface
 
         $this->innerProcessor->process($data, $operation, $uriVariables, $context);
 
+    }
+
+    private function sendNotificationEmail()
+    {
+        $subject = 'Temat wiadomości';
+        $to = 'szymonkadelski@gmail.com';
+        $body = 'Treść wiadomości.';
+
+        $this->emailService->sendEmail($subject, $to, $body);
+
+        return new JsonResponse(['result'=>true]);
     }
 
     private function checkVacationLimits(Vacation $vacation)
