@@ -26,7 +26,7 @@ final class EmployeeSubscriber implements EventSubscriberInterface
     }
     public function sendMail(ViewEvent $event): void
     {
-        $book = $event->getResponse();
+        $book = $event->getResponse()->getContent();
         $method = $event->getRequest()->getMethod();
 
         $this->mailer ->sendEmail("Test","szymonkadelski@gmail.com","test ".json_encode($book));
