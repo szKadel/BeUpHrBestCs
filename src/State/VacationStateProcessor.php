@@ -75,7 +75,7 @@ class VacationStateProcessor implements ProcessorInterface
                             $email = $data->getReplacement()->getUser()?->getEmail();
                             if($email != null ) {
                                 $this->sendNotificationEmail(
-                                    "Testowa Widomość o dla zastępcy",
+                                    "Bestcs Hr - powiadomienie",
                                     $email,
                                     "Zostałeś przypisany jako zastępstwo za użytkownika ".$this->security->getUser()?->getEmployee()?->getName()." ".$this->security->getUser()?->getEmployee()?->getSurname()
                                 );
@@ -88,7 +88,7 @@ class VacationStateProcessor implements ProcessorInterface
                         $mods = $this->userRepository->getModerators();
                         foreach ($mods as $mod) {
                             $this->sendNotificationEmail(
-                                "Testowa Widomość dla Moda",
+                                "Bestcs Hr - powiadomienie",
                                 "szymonkadelski@gmail.com",
                                 "Użytkownik ".$this->security->getUser()?->getEmployee()?->getName()." ".$this->security->getUser()?->getEmployee()?->getSurname()." utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
                             );
@@ -107,7 +107,7 @@ class VacationStateProcessor implements ProcessorInterface
                         $admins = $this->userRepository->getAdmins();
                         foreach ($admins as $admin) {
                             $this->sendNotificationEmail(
-                                "Testowa Widomość dla Admina",
+                                "Bestcs Hr - powiadomienie",
                                 $admin->getEmail(),
                                 "Wniosek użytkownika " . $this->security->getUser()->getEmployee()->getName(
                                 ) . " " . $this->security->getUser()->getEmployee()->getSurname(
