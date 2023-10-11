@@ -15,7 +15,6 @@ class DepartmentResourceTest extends KernelTestCase
 
     public function testDepartmentPost()
     {
-
         $this->browser()
             ->get('/api/departments')
             ->assertStatus(401);
@@ -27,6 +26,6 @@ class DepartmentResourceTest extends KernelTestCase
             ->actingAs($user)
             ->get('/api/departments')
             ->assertStatus(200)
-            ->assertJsonMatches('"hydra:totalItems"',1);
+            ->assertJsonMatches('"hydra:totalItems"', 1);
     }
 }

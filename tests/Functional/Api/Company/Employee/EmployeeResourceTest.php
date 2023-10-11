@@ -5,6 +5,7 @@ namespace App\Tests\Functional\Api\Company\Employee;
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\UserFactory;
+use App\Factory\VacationTypesFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -57,7 +58,7 @@ class EmployeeResourceTest extends KernelTestCase
     {
         $department = DepartmentFactory::createOne();
 
-        $employee = EmployeeFactory::createOne(['department'=>$department]);
+        $employee = EmployeeFactory::createOne(['department'    =>  $department]);
         $user = UserFactory::createOne(['roles'=>["ROLE_ADMIN"],'employee' => $employee]);
 
         $this->browser()
@@ -72,12 +73,13 @@ class EmployeeResourceTest extends KernelTestCase
 
     public function testVacationLoadWhenEmployeeAdd()
     {
+        VacationTypesFactory::createMany(10);
         $department = DepartmentFactory::createOne();
 
         $employee = EmployeeFactory::createOne(['department'=>$department]);
         $user = UserFactory::createOne(['roles'=>['ROLE_ADMIN'],'employee' => $employee]);
 
-        $employee2 = $this->browser()
+         $this->browser()
             ->actingAs($user)
             ->post('/api/employees',['json'=>[
                 'name'=>'test',
@@ -90,6 +92,8 @@ class EmployeeResourceTest extends KernelTestCase
         $this->browser()
             ->actingAs($user)
             ->get('/api/employees')
-            ->dump();
+            ->assertStatus(200);
     }
+
+
 }
