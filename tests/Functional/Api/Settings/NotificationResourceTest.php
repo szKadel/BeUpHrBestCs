@@ -25,12 +25,4 @@ class NotificationResourceTest extends KernelTestCase
             ->assertStatus(200);
 
     }
-
-    public function testNotificationPutResourceTest()
-    {
-        $employee = EmployeeFactory::createOne();
-        $user = UserFactory::createOne(['password'=>'pass', 'roles'=>['ROLE_ADMIN'], 'employee' =>null]);
-        $notification = NotificationFactory::createOne();
-
-    }
 }

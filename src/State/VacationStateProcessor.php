@@ -89,7 +89,7 @@ class VacationStateProcessor implements ProcessorInterface
                         foreach ($mods as $mod) {
                             $this->sendNotificationEmail(
                                 "Bestcs Hr - powiadomienie",
-                                "szymonkadelski@gmail.com",
+                                $mod->getEmial(),
                                 "Użytkownik ".$this->security->getUser()?->getEmployee()?->getName()." ".$this->security->getUser()?->getEmployee()?->getSurname()." utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
                             );
                         }

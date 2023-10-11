@@ -67,14 +67,14 @@ class Vacation
     #[ApiFilter(DateFilter::class)]
     #[Assert\NotBlank]
     #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
-    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?\DateTimeInterface $dateFrom = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank]
     #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     #[ApiFilter(DateFilter::class)]
-    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?\DateTimeInterface $dateTo = null;
 
     #[ORM\Column]
