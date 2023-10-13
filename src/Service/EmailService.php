@@ -51,7 +51,7 @@ class EmailService
         if (!empty($replacementUser->getEmail())) {
             $this->sendEmail(
                 "Bestcs Hr - powiadomienie",
-                $replacementUser->getUser()->getEmail(),
+                $replacementUser->getEmail(),
                 "Zostałeś przypisany jako zastępstwo za użytkownika " . $employee->getName() . " " . $employee->getSurname() ??""
             );
         }
