@@ -50,12 +50,12 @@ class Notification
         return $this->id;
     }
 
-    public function isNotifcateAdminOnAcceptVacation(): ?bool
+    public function isNotificateAdminOnAcceptVacation(): ?bool
     {
         return $this->NotifcateAdminOnAcceptVacation;
     }
 
-    public function setNotifcateAdminOnAcceptVacation(?bool $NotifcateAdminOnAcceptVacation): static
+    public function setNotificateAdminOnAcceptVacation(?bool $NotifcateAdminOnAcceptVacation): static
     {
         $this->NotifcateAdminOnAcceptVacation = $NotifcateAdminOnAcceptVacation;
 
@@ -74,14 +74,14 @@ class Notification
         return $this;
     }
 
-    public function isNotificateReplacmentUser(): ?bool
+    public function isNotificateReplacementUserUser(): ?bool
     {
-        return $this->NotificateReplacmentUser;
+        return $this->NotificateReplacementUser;
     }
 
     public function setNotificateReplacmentUser(?bool $NotificateReplacmentUser): static
     {
-        $this->NotificateReplacmentUser = $NotificateReplacmentUser;
+        $this->NotificateReplacementUser = $NotificateReplacmentUser;
 
         return $this;
     }
@@ -101,9 +101,9 @@ class Notification
     /**
      * @return bool|null
      */
-    public function getNotifcateAdminOnAcceptVacation(): ?bool
+    public function getNotificateAdminOnAcceptVacation(): ?bool
     {
-        return $this->NotifcateAdminOnAcceptVacation;
+        return $this->NotificateAdminOnAcceptVacation;
     }
 
     /**
@@ -117,9 +117,9 @@ class Notification
     /**
      * @return bool|null
      */
-    public function getNotificateReplacmentUser(): ?bool
+    public function getNotificateReplacementUser(): ?bool
     {
-        return $this->NotificateReplacmentUser;
+        return $this->NotificateAdminOnAcceptVacation;
     }
 
     /**
