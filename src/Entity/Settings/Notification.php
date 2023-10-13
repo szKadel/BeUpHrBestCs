@@ -74,11 +74,6 @@ class Notification
         return $this;
     }
 
-    public function isNotificateReplacementUserUser(): ?bool
-    {
-        return $this->NotificateReplacementUser;
-    }
-
     public function setNotificateReplacmentUser(?bool $NotificateReplacmentUser): static
     {
         $this->NotificateReplacementUser = $NotificateReplacmentUser;
@@ -119,7 +114,7 @@ class Notification
      */
     public function getNotificateReplacementUser(): ?bool
     {
-        return $this->NotificateAdminOnAcceptVacation;
+        return $this->getNotificateReplacementUser;
     }
 
     /**
