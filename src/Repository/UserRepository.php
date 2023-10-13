@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Company\Department;
+use App\Entity\Company\Employee;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -74,11 +76,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $query->getResult();
     }
 
-    public function getModerators()
+    public function getModerators(Department $department)
     {
         $query = $this->createQueryBuilder('u')
+            ->leftJoin('u.employee', "e")
             ->where('u.roles LIKE :role')
+            ->andWhere('e.department = :department' )
             ->setParameter('role', '%ROLE_MOD%')
+            ->setParameter('department', $department -> getId())
             ->getQuery();
 
         return $query->getResult();

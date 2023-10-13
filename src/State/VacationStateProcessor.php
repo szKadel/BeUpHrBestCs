@@ -30,8 +30,7 @@ class VacationStateProcessor implements ProcessorInterface
         private VacationStatusRepository $vacationStatusRepository,
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmailService $emailService,
-        private NotificationRepository $notificationRepository,
-        private UserRepository $userRepository
+        private NotificationRepository $notificationRepository
     )
     {
 
@@ -52,7 +51,6 @@ class VacationStateProcessor implements ProcessorInterface
                         $data->getDateFrom(),
                         $data->getDateTo()
                     );
-
                     $this->setVacationStatus($data);
 
                     if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
@@ -74,14 +72,7 @@ class VacationStateProcessor implements ProcessorInterface
 
                     if($this->notificationRepository->getNotificationsSettings()?->getNotificateDepartmentModOnCreatedVacation())
                     {
-                        $mods = $this->userRepository->getModerators();
-                        foreach ($mods as $mod){
-                            $this->sendNotificationEmail(
-                                "Bestcs Hr - powiadomienie",
-                                $mod->getEmail(),
-                                "Użytkownik ".$this->security->getUser()?->getEmployee()?->getName()." ".$this->security->getUser()?->getEmployee()?->getSurname()." utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
-                            );
-                        }
+                        $this->emailService->sendNotificationToModofDepartment($data->getEmployee());
                     }
                 }
             } elseif ($operation instanceof Put) {
@@ -89,31 +80,21 @@ class VacationStateProcessor implements ProcessorInterface
                     $this->checkVacationLimits($data);
                 }
 
-                if($this->notificationRepository->getNotificationsSettings()?->getNotifcateAdminOnAcceptVacation())
+                if($data->getStatus() != $context["previous_data"]->getStatus())
                 {
-                    if($data->getStatus()->getName() == "Potwierdzony") {
-                        $admins = $this->userRepository->getAdmins();
-                        foreach ($admins as $admin) {
-                            $this->sendNotificationEmail(
-                                "Bestcs Hr - powiadomienie",
-                                $admin->getEmail(),
-                                "Wniosek użytkownika " . $this->security->getUser()->getEmployee()->getName(
-                                ) . " " . $this->security->getUser()->getEmployee()->getSurname(
-                                ) . " został zaakceptowany."
-                            );
-                        }
+                        if($data->getStatus()->getName() == "Potwierdzony") {
 
-                        if($this->notificationRepository->getNotificationsSettings()?->getNotificateReplacmentUser())
-                        {
-                            $email = $data->getReplacement()->getUser()?->getEmail();
-                            if($email != null ) {
-                                $this->sendNotificationEmail(
-                                    "Bestcs Hr - powiadomienie",
-                                    $email,
-                                    "Zostałeś przypisany jako zastępstwo za użytkownika ".$this->security->getUser()?->getEmployee()?->getName()." ".$this->security->getUser()?->getEmployee()?->getSurname()
-                                );
+                            if($this->notificationRepository -> getNotificationsSettings() ?->getNotifcateAdminOnAcceptVacation()) {
+                                $this->emailService -> sendNotificationEmailToAllAdmin($data->getEmployee());
                             }
-                        }
+
+                            if ($this->notificationRepository -> getNotificationsSettings()?->getNotificateReplacmentUser() && !empty($data->getReplacement())) {
+                                $this->emailService -> sendReplacementEmployeeNotification($data->getEmployee(),$data->getReplacement());
+                            }
+
+                            if ($this->notificationRepository -> getNotificationsSettings()?->getNotificateReplacmentUser() && !empty($data->getReplacement())) {
+                                $this->emailService -> sendNotificationToOwnerOnAccept($data->getEmployee());
+                            }
                     }
                 }
             }
@@ -132,13 +113,6 @@ class VacationStateProcessor implements ProcessorInterface
         }
 
         $this->innerProcessor->process($data, $operation, $uriVariables, $context);
-    }
-
-    private function sendNotificationEmail($title, $to, $body)
-    {
-        $this->emailService->sendEmail($title, $to, $body);
-
-        return new JsonResponse(['result'=>true]);
     }
 
     private function checkVacationLimits(Vacation $vacation)

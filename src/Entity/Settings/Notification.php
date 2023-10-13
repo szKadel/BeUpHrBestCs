@@ -129,4 +129,12 @@ class Notification
     {
         return $this->NotificateUserOnVacationRequestAccept;
     }
+
+    /**
+     * @param bool|null $NotificateReplacementUser
+     */
+    public function setNotificateReplacementUser(?bool $NotificateReplacementUser): void
+    {
+        $this->NotificateReplacementUser = $NotificateReplacementUser;
+    }
 }

@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Entity\Company\Employee;
+use App\Entity\Vacation\Vacation;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -72,9 +73,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[SerializedName('password')]
     private ?string $plainPassword = null;
 
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Vacation::class)]
+    private Collection $VacationCreated;
+
     public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
+        $this->VacationCreated = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -218,5 +223,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPlainPassword():?string
     {
         return $this->plainPassword??null;
+    }
+
+    /**
+     * @return Collection<int, Vacation>
+     */
+    public function getAcceptedBy(): Collection
+    {
+        return $this->VacationCreated;
+    }
+
+    public function addAcceptedBy(Vacation $acceptedBy): static
+    {
+        if (!$this->VacationCreated->contains($acceptedBy)) {
+            $this->VacationCreated->add($acceptedBy);
+            $acceptedBy->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAcceptedBy(Vacation $acceptedBy): static
+    {
+        if ($this->VacationCreated->removeElement($acceptedBy)) {
+            // set the owning side to null (unless already changed)
+            if ($acceptedBy->getCreatedBy() === $this) {
+                $acceptedBy->setCreatedBy(null);
+            }
+        }
+
+        return $this;
     }
 }

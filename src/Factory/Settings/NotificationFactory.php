@@ -47,9 +47,9 @@ final class NotificationFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'notifcate_admin_on_accept_vacation' => 1,
+            'notificate_admin_on_accept_vacation' => 1,
             'notificate_department_mod_on_created_vacation' => 1,
-            'notificate_replacment_user' => 1,
+            'notificate_replacement_user' => 1,
             'notificate_user_on_vacation_request_accept' => 1
         ];
     }
