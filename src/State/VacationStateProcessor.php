@@ -92,7 +92,7 @@ class VacationStateProcessor implements ProcessorInterface
                                 $this->emailService -> sendReplacementEmployeeNotification($data->getEmployee(),$data->getReplacement());
                             }
 
-                            if ($this->notificationRepository -> getNotificationsSettings() ?->getNotificateReplacementUser() && !empty($data->getReplacement())) {
+                            if ($this->notificationRepository -> getNotificationsSettings() ?-> getNotificateUserOnVacationRequestAccept()) {
                                 $this->emailService -> sendNotificationToOwnerOnAccept($data->getEmployee());
                             }
                     }

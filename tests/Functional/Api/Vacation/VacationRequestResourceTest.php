@@ -127,7 +127,7 @@ class VacationRequestResourceTest extends KernelTestCase
     {
         VacationStatusFactory::createOne(['name'=>'Oczekujący']);
         VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
-        $vacationStatus = VacationStatusFactory::createOne(['name'=>'Zaakceptowany']);
+        $vacationStatus = VacationStatusFactory::createOne(['name'=>'Potwierdzony']);
 
         $department = DepartmentFactory::createOne();
         $department2 = DepartmentFactory::createOne();
@@ -147,6 +147,8 @@ class VacationRequestResourceTest extends KernelTestCase
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
 
+        NotificationFactory::createOne();
+
         $this->browser()
             ->actingAs($user)
             ->post('/api/vacations',[
@@ -154,7 +156,8 @@ class VacationRequestResourceTest extends KernelTestCase
                     'employee'=>'api/employees/'.$employee->getId(),
                     'type'=> 'api/vacation_types/'.$vacationType->getId(),
                     'dateFrom'=> '2023-09-15',
-                    'dateTo'=>'2023-09-21'
+                    'dateTo'=>'2023-09-21',
+                    'replacement'=> 'api/employees/'.$employeeMod->getId(),
                 ]
             ])
             ->assertStatus(201);
@@ -163,7 +166,7 @@ class VacationRequestResourceTest extends KernelTestCase
             ->actingAs($user)
             ->put('/api/vacations/1',[
                 'json'=>[
-                    'status'=>'api/vacation_statuses/2'
+                    'status'=>'api/vacation_statuses/'.$vacationStatus->getId()
                 ]
             ])
             ->assertStatus(200);

@@ -19,7 +19,6 @@ final class EmployeeSubscriber implements EventSubscriberInterface
 {
     private $mailer;
     public function __construct(
-        private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private VacationTypesRepository $vacationTypesRepository,
         private VacationLimitPresist $vacationLimitPresist
     )

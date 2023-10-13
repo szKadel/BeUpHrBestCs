@@ -55,9 +55,9 @@ class Notification
         return $this->NotifcateAdminOnAcceptVacation;
     }
 
-    public function setNotificateAdminOnAcceptVacation(?bool $NotifcateAdminOnAcceptVacation): static
+    public function setNotificateAdminOnAcceptVacation(?bool $NotificateAdminOnAcceptVacation): static
     {
-        $this->NotifcateAdminOnAcceptVacation = $NotifcateAdminOnAcceptVacation;
+        $this->NotificateAdminOnAcceptVacation = $NotificateAdminOnAcceptVacation;
 
         return $this;
     }
@@ -114,7 +114,7 @@ class Notification
      */
     public function getNotificateReplacementUser(): ?bool
     {
-        return $this->getNotificateReplacementUser;
+        return $this->NotificateReplacementUser;
     }
 
     /**
