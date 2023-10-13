@@ -84,15 +84,15 @@ class VacationStateProcessor implements ProcessorInterface
                 {
                         if($data->getStatus()->getName() == "Potwierdzony") {
 
-                            if($this->notificationRepository -> getNotificationsSettings() ?->getNotifcateAdminOnAcceptVacation()) {
+                            if($this->notificationRepository -> getNotificationsSettings() ?->getNotificateAdminOnAcceptVacation()) {
                                 $this->emailService -> sendNotificationEmailToAllAdmin($data->getEmployee());
                             }
 
-                            if ($this->notificationRepository -> getNotificationsSettings()?->getNotificateReplacmentUser() && !empty($data->getReplacement())) {
+                            if ($this->notificationRepository -> getNotificationsSettings()?->getNotificateReplacementUser() && !empty($data->getReplacement())) {
                                 $this->emailService -> sendReplacementEmployeeNotification($data->getEmployee(),$data->getReplacement());
                             }
 
-                            if ($this->notificationRepository -> getNotificationsSettings()?->getNotificateReplacmentUser() && !empty($data->getReplacement())) {
+                            if ($this->notificationRepository -> getNotificationsSettings()?->getNotificateReplacementUser() && !empty($data->getReplacement())) {
                                 $this->emailService -> sendNotificationToOwnerOnAccept($data->getEmployee());
                             }
                     }
