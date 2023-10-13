@@ -70,23 +70,12 @@ class VacationStateProcessor implements ProcessorInterface
                             $data->getDateTo()
                         );
 
-                        if($this->notificationRepository->getNotificationsSettings()?->getNotificateReplacmentUser())
-                        {
-                            $email = $data->getReplacement()->getUser()?->getEmail();
-                            if($email != null ) {
-                                $this->sendNotificationEmail(
-                                    "Bestcs Hr - powiadomienie",
-                                    $email,
-                                    "Zostałeś przypisany jako zastępstwo za użytkownika ".$this->security->getUser()?->getEmployee()?->getName()." ".$this->security->getUser()?->getEmployee()?->getSurname()
-                                );
-                            }
-                        }
                     }
 
                     if($this->notificationRepository->getNotificationsSettings()?->getNotificateDepartmentModOnCreatedVacation())
                     {
                         $mods = $this->userRepository->getModerators();
-                        foreach ($mods as $mod) {
+                        foreach ($mods as $mod){
                             $this->sendNotificationEmail(
                                 "Bestcs Hr - powiadomienie",
                                 $mod->getEmail(),
@@ -94,7 +83,6 @@ class VacationStateProcessor implements ProcessorInterface
                             );
                         }
                     }
-
                 }
             } elseif ($operation instanceof Put) {
                 if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
@@ -113,6 +101,18 @@ class VacationStateProcessor implements ProcessorInterface
                                 ) . " " . $this->security->getUser()->getEmployee()->getSurname(
                                 ) . " został zaakceptowany."
                             );
+                        }
+
+                        if($this->notificationRepository->getNotificationsSettings()?->getNotificateReplacmentUser())
+                        {
+                            $email = $data->getReplacement()->getUser()?->getEmail();
+                            if($email != null ) {
+                                $this->sendNotificationEmail(
+                                    "Bestcs Hr - powiadomienie",
+                                    $email,
+                                    "Zostałeś przypisany jako zastępstwo za użytkownika ".$this->security->getUser()?->getEmployee()?->getName()." ".$this->security->getUser()?->getEmployee()?->getSurname()
+                                );
+                            }
                         }
                     }
                 }

@@ -26,6 +26,7 @@ class Notification
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['notificationSetting:read'])]
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
@@ -38,7 +39,7 @@ class Notification
 
     #[ORM\Column(nullable: true)]
     #[Groups(['notificationSetting:read', 'notificationSetting:update'])]
-    private ?bool $NotificateReplacmentUser = null;
+    private ?bool $NotificateReplacementUser = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['notificationSetting:read', 'notificationSetting:update'])]
