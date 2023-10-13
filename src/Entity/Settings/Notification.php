@@ -31,7 +31,7 @@ class Notification
 
     #[ORM\Column(nullable: true)]
     #[Groups(['notificationSetting:read', 'notificationSetting:update'])]
-    private ?bool $NotifcateAdminOnAcceptVacation = null;
+    private ?bool $NotificateAdminOnAcceptVacation = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['notificationSetting:read', 'notificationSetting:update'])]
