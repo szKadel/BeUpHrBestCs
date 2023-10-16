@@ -114,9 +114,9 @@ class VacationStateProcessor implements ProcessorInterface
 
                         $data->setAnnulledAt(new DateTime());
 
-                        if ($user instanceof User) {
+
                             $data->setAnnulledBy($user);
-                        }
+
                     }
 
                     if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
