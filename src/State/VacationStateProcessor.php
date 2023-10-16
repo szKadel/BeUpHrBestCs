@@ -90,9 +90,8 @@ class VacationStateProcessor implements ProcessorInterface
 
                         $user = $this->security->getUser();
 
-                        if($user instanceof  User){
-                            $data->setAcceptedBy($user);
-                        }
+                        $data->setAcceptedBy($this->userRepository->find($user->getId()));
+
 
                         if($this->notificationRepository -> getNotificationsSettings() ?->getNotificateAdminOnAcceptVacation()) {
                             $this->emailService -> sendNotificationEmailToAllAdmin($data->getEmployee());
