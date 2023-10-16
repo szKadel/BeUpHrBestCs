@@ -87,7 +87,7 @@ class VacationStateProcessor implements ProcessorInterface
 
                         $data->setAcceptedAt(new DateTime());
 
-                        $user = $this->iriConverter->getResourceFromIri('api/users/'.$this->security->getUser()->getId());
+                        $user = $this->security->getUser();
 
                         if($user instanceof  User){
                             $data->setAcceptedBy($user);
@@ -111,9 +111,7 @@ class VacationStateProcessor implements ProcessorInterface
                 {
                     $date = date('Y-m-d');
                     if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"" && $date <= $data->getDateFrom()) {
-                        $user = $this->iriConverter->getResourceFromIri(
-                            'api/users/' . $this->security->getUser()->getId()
-                        );
+                        $user = $this->security->getUser();
 
                         $data->setAnnulledAt(new DateTime());
 
