@@ -132,24 +132,7 @@ class Vacation
     #[ORM\PreUpdate]
     public function preUpdate(PreUpdateEventArgs $eventArgs):void
     {
-        if($this->type?->getId() == 1 || $this->type->getId() == 11) {
-            throw new BadRequestException("Nie można zaakceptować wniosku o tym typie. Określ typ wniosku.",403);
-        }
 
-        if($this->type->getName() == "Inny" && $eventArgs->getNewValue("status")->getName() == "Zaakceptowany")
-        {
-            throw new BadRequestException("Nie można zaakceptować ani odrzucić wniosku o typie urlopu inny, zmień typ i spróbuj ponownie.",403);
-        }
-
-        if($this->status?->getName() == "Anulowany")
-        {
-            $this->setAnnulledAt(new DateTime());
-        }
-
-        if($this->status?->getName() == "Zaakceptowany")
-        {
-            $this->setAcceptedAt(new DateTime());
-        }
     }
 
     public function getId(): ?int

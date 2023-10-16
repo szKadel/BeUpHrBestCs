@@ -2,10 +2,12 @@
 
 namespace App\State;
 
+use ApiPlatform\Api\IriConverterInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\State\ProcessorInterface;
+use App\Entity\User;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
 use App\Entity\Vacation\VacationStatus;
@@ -15,6 +17,8 @@ use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
 use App\Repository\VacationStatusRepository;
 use App\Service\EmailService;
+use DateTime;
+use mysql_xdevapi\Exception;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -30,7 +34,8 @@ class VacationStateProcessor implements ProcessorInterface
         private VacationStatusRepository $vacationStatusRepository,
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmailService $emailService,
-        private NotificationRepository $notificationRepository
+        private NotificationRepository $notificationRepository,
+        private IriConverterInterface $iriConverter
     )
     {
 
@@ -84,6 +89,14 @@ class VacationStateProcessor implements ProcessorInterface
                 {
                         if($data->getStatus()->getName() == "Potwierdzony") {
 
+                            $data->setAcceptedAt(new DateTime());
+
+                            $user = $this->iriConverter->getResourceFromIri('api/users/'.$this->security->getUser()->getId());
+
+                            if($user instanceof  User){
+                                $data->setAcceptedBy($user);
+                            }
+
                             if($this->notificationRepository -> getNotificationsSettings() ?->getNotificateAdminOnAcceptVacation()) {
                                 $this->emailService -> sendNotificationEmailToAllAdmin($data->getEmployee());
                             }
@@ -95,6 +108,34 @@ class VacationStateProcessor implements ProcessorInterface
                             if ($this->notificationRepository -> getNotificationsSettings() ?-> getNotificateUserOnVacationRequestAccept()) {
                                 $this->emailService -> sendNotificationToOwnerOnAccept($data->getEmployee());
                             }
+                        }
+                }
+
+                if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
+                {
+                    $date = date('Y-m-d');
+                    if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"" && $date <= $data->getDateFrom()) {
+                        $user = $this->iriConverter->getResourceFromIri(
+                            'api/users/' . $this->security->getUser()->getId()
+                        );
+
+                        $data->setAnnulledAt(new DateTime());
+
+                        if ($user instanceof User) {
+                            $data->setAnnulledBy($user);
+                        }
+                    }
+
+                    if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
+                        $user = $this->iriConverter->getResourceFromIri(
+                            'api/users/' . $this->security->getUser()->getId()
+                        );
+
+                        $data->setAnnulledAt(new DateTime());
+
+                        if ($user instanceof User) {
+                            $data->setAnnulledBy($user);
+                        }
                     }
                 }
             }
