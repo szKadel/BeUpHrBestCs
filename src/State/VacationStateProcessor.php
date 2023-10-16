@@ -30,8 +30,7 @@ class VacationStateProcessor implements ProcessorInterface
         private VacationStatusRepository $vacationStatusRepository,
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmailService $emailService,
-        private NotificationRepository $notificationRepository,
-        private IriConverterInterface $iriConverter
+        private NotificationRepository $notificationRepository
     )
     {
 
@@ -121,9 +120,7 @@ class VacationStateProcessor implements ProcessorInterface
                     }
 
                     if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
-                        $user = $this->iriConverter->getResourceFromIri(
-                            'api/users/' . $this->security->getUser()->getId()
-                        );
+                        $user = $this->security->getUser();
 
                         $data->setAnnulledAt(new DateTime());
 
