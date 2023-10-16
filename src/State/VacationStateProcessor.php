@@ -12,6 +12,7 @@ use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
 use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\Settings\NotificationRepository;
+use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
 use App\Repository\VacationStatusRepository;
 use App\Service\EmailService;
@@ -30,6 +31,7 @@ class VacationStateProcessor implements ProcessorInterface
         private VacationStatusRepository $vacationStatusRepository,
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmailService $emailService,
+        private UserRepository $userRepository,
         private NotificationRepository $notificationRepository
     )
     {
@@ -115,7 +117,7 @@ class VacationStateProcessor implements ProcessorInterface
                         $data->setAnnulledAt(new DateTime());
 
 
-                            $data->setAnnulledBy($user);
+                            $data->setAnnulledBy($this->userRepository->find($user->getId()));
 
                     }
 
