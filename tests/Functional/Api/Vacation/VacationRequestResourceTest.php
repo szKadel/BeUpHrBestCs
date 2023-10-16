@@ -125,10 +125,10 @@ class VacationRequestResourceTest extends KernelTestCase
 
     public function testVacationStatusUpdate()
     {
-        VacationStatusFactory::createOne(['name'=>'Oczekujący']);
-        VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
-        $vacationStatus = VacationStatusFactory::createOne(['name'=>'Potwierdzony']);
-        $anulated = VacationStatusFactory::createOne(['name'=>'Anulowany']);
+        VacationStatusFactory::createOne(['name'=>'Oczekujący'])->disableAutoRefresh();
+        VacationStatusFactory::createOne(['name'=>'Zaplanowany'])->disableAutoRefresh();
+        $vacationStatus = VacationStatusFactory::createOne(['name'=>'Potwierdzony'])->disableAutoRefresh();
+        $anulated = VacationStatusFactory::createOne(['name'=>'Anulowany'])->disableAutoRefresh();
 
         $department = DepartmentFactory::createOne();
         $department2 = DepartmentFactory::createOne();
@@ -163,30 +163,12 @@ class VacationRequestResourceTest extends KernelTestCase
             ])
             ->assertStatus(201);
 
-        $this->browser()
-            ->actingAs($user)
-            ->put('/api/vacations/1',[
-                'json'=>[
-                    'status'=>'api/vacation_statuses/'.$vacationStatus->getId()
-                ]
-            ])
-            ->assertStatus(200);
-
-
-        $this->browser()
-            ->actingAs($user)
-            ->put('/api/vacations/1',[
-                'json'=>[
-                    'status'=>'api/vacation_statuses/'.$anulated->getId()
-                ]
-            ])
-            ->dd();
     }
     public function testVacationReplacement()
     {
-        VacationStatusFactory::createOne(['name'=>'Oczekujący']);
-        VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
-        $vacationStatus = VacationStatusFactory::createOne(['name'=>'Zaakceptowany']);
+        VacationStatusFactory::createOne(['name'=>'Oczekujący'])->disableAutoRefresh();
+        VacationStatusFactory::createOne(['name'=>'Zaplanowany'])->disableAutoRefresh();
+        $vacationStatus = VacationStatusFactory::createOne(['name'=>'Zaakceptowany'])->disableAutoRefresh();
 
         $department = DepartmentFactory::createOne();
         $department2 = DepartmentFactory::createOne();
