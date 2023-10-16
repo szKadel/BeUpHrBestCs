@@ -115,12 +115,15 @@ class Vacation
     private mixed $annulledAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'VacationCreated')]
+    #[Groups(['vacationRequest:read'])]
     private ?User $createdBy = null;
 
     #[ORM\ManyToOne]
+    #[Groups(['vacationRequest:read'])]
     private ?User $acceptedBy = null;
 
     #[ORM\ManyToOne]
+    #[Groups(['vacationRequest:read'])]
     private ?User $AnnulledBy = null;
 
 
