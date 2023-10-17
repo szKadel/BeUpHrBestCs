@@ -124,7 +124,7 @@ class Vacation
 
     #[ORM\ManyToOne]
     #[Groups(['vacationRequest:read'])]
-    private ?User $AnnulledBy = null;
+    private ?User $annulledBy = null;
 
 
     public function __construct()
@@ -330,12 +330,12 @@ class Vacation
 
     public function getAnnulledBy(): ?User
     {
-        return $this->AnnulledBy;
+        return $this->annulledBy;
     }
 
-    public function setAnnulledBy(?User $AnnulledBy): static
+    public function setAnnulledBy(?User $annulledBy): static
     {
-        $this->AnnulledBy = $AnnulledBy;
+        $this->annulledBy = $annulledBy;
 
         return $this;
     }

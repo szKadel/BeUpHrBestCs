@@ -52,7 +52,7 @@ class Notification
 
     public function isNotificateAdminOnAcceptVacation(): ?bool
     {
-        return $this->NotifcateAdminOnAcceptVacation;
+        return $this->NotificateAdminOnAcceptVacation;
     }
 
     public function setNotificateAdminOnAcceptVacation(?bool $NotificateAdminOnAcceptVacation): static
