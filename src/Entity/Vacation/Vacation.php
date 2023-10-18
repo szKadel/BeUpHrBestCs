@@ -18,6 +18,7 @@ use App\Service\WorkingDaysCounterService;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -124,7 +125,7 @@ class Vacation
 
     #[ORM\ManyToOne]
     #[Groups(['vacationRequest:read'])]
-    private ?User $annulledBy = null;
+    private ?User $AnnulledBy = null;
 
 
     public function __construct()
@@ -133,9 +134,26 @@ class Vacation
     }
 
     #[ORM\PreUpdate]
-    public function preUpdate(PreUpdateEventArgs $eventArgs):void
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
+        if($this->type?->getId() == 1 || $this->type->getId() == 11) {
+            throw new BadRequestException("Nie można zaakceptować wniosku o tym typie. Określ typ wniosku.",403);
+        }
 
+        if($this->type->getName() == "Inny" && $eventArgs->getNewValue("status")->getName() == "Zaakceptowany")
+        {
+            throw new BadRequestException("Nie można zaakceptować ani odrzucić wniosku o typie urlopu inny, zmień typ i spróbuj ponownie.",403);
+        }
+
+        if($this->status?->getName() == "Anulowany")
+        {
+            $this->setAnnulledAt(new DateTime());
+        }
+
+        if($this->status?->getName() == "Zaakceptowany")
+        {
+            $this->setAcceptedAt(new DateTime());
+        }
     }
 
     public function getId(): ?int
@@ -330,12 +348,12 @@ class Vacation
 
     public function getAnnulledBy(): ?User
     {
-        return $this->annulledBy;
+        return $this->AnnulledBy;
     }
 
-    public function setAnnulledBy(?User $annulledBy): static
+    public function setAnnulledBy(?User $AnnulledBy): static
     {
-        $this->annulledBy = $annulledBy;
+        $this->AnnulledBy = $AnnulledBy;
 
         return $this;
     }

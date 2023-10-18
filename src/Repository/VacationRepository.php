@@ -9,6 +9,7 @@ use App\Entity\Vacation\VacationTypes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\Intl\WeekDate;
 
 /**
  * @extends ServiceEntityRepository<\App\Entity\Vacation\Vacation>
@@ -52,6 +53,7 @@ class VacationRepository extends ServiceEntityRepository
 
     public function findVacationUsedByUser(Employee $employee, VacationStatus $vacationStatus, VacationTypes $vacationTypes):int
     {
+
         $result = $this->createQueryBuilder('v')
             ->andWhere('v.employee = :employee')
             ->andWhere('v.status = :status')
@@ -70,6 +72,20 @@ class VacationRepository extends ServiceEntityRepository
         }
 
         return $days;
+    }
+
+    public function findEmployeeOnVacation(\DateTime $dateFrom, \DateTime $dateTo) :mixed
+    {
+        $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
+
+        return $this->createQueryBuilder('v')
+            ->andWhere('(:dateFrom BETWEEN v.dateFrom AND v.dateTo OR :dateTo BETWEEN v.dateFrom AND v.dateTo OR v.dateFrom BETWEEN :dateFrom AND :dateFrom OR v.dateFrom BETWEEN :dateFrom AND :dateTo OR :dateFrom = v.dateTo OR v.dateTo = :dateFrom OR v.dateFrom = :dateTo)')
+            ->andWhere('v.status = :status')
+            ->setParameter('status', $statusAccepted)
+            ->setParameter('dateFrom', $dateFrom->format('Y-m-d'))
+            ->setParameter('dateTo', $dateTo->format('Y-m-d'))
+            ->getQuery()
+            ->getResult();
     }
 //    /**
 //     * @return Vacation[] Returns an array of Vacation objects
