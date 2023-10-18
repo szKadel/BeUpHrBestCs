@@ -27,7 +27,20 @@ class HomeController extends AbstractController
         $weekStartDate->modify('this week');
         $weekEndDate = $weekStartDate->modify('+4 days');
 
-        $result = $this->vacationRepository->findEmployeeOnVacation($weekStartDate, $weekEndDate);
-        return new JsonResponse($result);
+        $dbResult = $this->vacationRepository->findEmployeeOnVacation($weekStartDate, $weekEndDate);
+
+        foreach ($dbResult as $vacation){
+            $result[] = [
+                'vacation_id'=>$vacation ->getId(),
+                'employee_id'=>$vacation ->getEmployee()->getId(),
+                'employee' => $vacation -> getEmployee()->getSurname()." ". $vacation -> getEmployee()->getName()??"" ,
+                'dataFrom' => $vacation -> getDateFrom(),
+                'dataTo' => $vacation -> getDateTo(),
+                'replacement_name' => $vacation ?-> getReplacement() ?-> getName() ??"",
+                'replacement_surname' => $vacation ?-> getReplacement() ?-> getSurname()??"",
+            ];
+        }
+
+        return new JsonResponse($result ?? "");
     }
 }
