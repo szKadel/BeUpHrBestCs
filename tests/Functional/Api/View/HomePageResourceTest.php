@@ -40,10 +40,10 @@ class HomePageResourceTest extends KernelTestCase
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
 
         VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType]);
-        VacationFactory::createMany(5,['employee' => $employee3, 'type'=>$vacationType]);
+        VacationFactory::createMany(5,['employee' => $employee, 'type'=>$vacationType]);
 
         $this->browser()
-            ->actingAs($mod)
+            ->actingAs($user)
             ->get("/api/vacations/week/current")
             ->dd();
     }

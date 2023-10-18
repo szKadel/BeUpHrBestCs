@@ -8,8 +8,8 @@ use App\Entity\Vacation\VacationStatus;
 use App\Entity\Vacation\VacationTypes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\Intl\WeekDate;
 
 /**
  * @extends ServiceEntityRepository<\App\Entity\Vacation\Vacation>
@@ -21,6 +21,7 @@ use Symfony\Component\Intl\WeekDate;
  */
 class VacationRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry,private VacationStatusRepository $vacationStatusRepository)
     {
         parent::__construct($registry, Vacation::class);

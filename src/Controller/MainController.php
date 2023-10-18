@@ -15,16 +15,4 @@ class MainController extends AbstractController
     {
         return new RedirectResponse('/view/');
     }
-
-    #[Route('/mail/')]
-    public function sendEmail(EmailService $emailService): JsonResponse
-    {
-        $subject = 'Temat wiadomości';
-        $to = 'szymon@beupsoft.pl';
-        $body = 'Treść wiadomości.';
-
-        $emailService->sendEmail($subject, $to, $body);
-
-        return new JsonResponse(['result'=>true]);
-    }
 }

@@ -28,7 +28,6 @@ class HomeController extends AbstractController
         $weekEndDate = $weekStartDate->modify('+4 days');
 
         $result = $this->vacationRepository->findEmployeeOnVacation($weekStartDate, $weekEndDate);
-
         return new JsonResponse($result);
     }
 }

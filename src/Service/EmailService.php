@@ -36,13 +36,14 @@ class EmailService
     {
         $admins = $this->userRepository->getAdmins();
         foreach ($admins as $admin) {
-            $this->sendEmail(
-                "Bestcs Hr - powiadomienie",
-                $admin->getEmail(),
-                "Wniosek użytkownika " . $employee->getName(
-                ) . " " . $employee->getSurname(
-                ) . " został zaakceptowany."
-            );
+            if(!empty($admin->getEmail)) {
+                $this->sendEmail(
+                    "Bestcs Hr - powiadomienie",
+                    $admin->getEmail(),
+                    "Wniosek użytkownika " . $employee->getName() . " " . $employee->getSurname(
+                    ) . " został zaakceptowany."
+                );
+            }
         }
     }
 
@@ -61,20 +62,26 @@ class EmailService
     {
         $mods = $this->userRepository->getModerators($employee->getDepartment());
         foreach ($mods as $mod){
-            $this->sendEmail(
-                "Bestcs Hr - powiadomienie",
-                $mod->getEmail(),
-                "Użytkownik ".$employee->getName()." ".$employee->getSurname()." utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
-            );
+            if(!empty($mod->getEmail())) {
+                $this->sendEmail(
+                    "Bestcs Hr - powiadomienie",
+                    $mod->getEmail(),
+                    "Użytkownik " . $employee->getName() . " " . $employee->getSurname(
+                    ) . " utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
+                );
+            }
         }
     }
 
     public function sendNotificationToOwnerOnAccept(Employee $employee):void
     {
+        if(!empty($employee->getUser()->getEmail())) {
             $this->sendEmail(
                 "Bestcs Hr - powiadomienie",
                 $employee->getUser()->getEmail(),
-                "Użytkownik ".$employee->getName()." ".$employee->getSurname()." utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
+                "Użytkownik " . $employee->getName() . " " . $employee->getSurname(
+                ) . " utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
             );
+        }
     }
 }
