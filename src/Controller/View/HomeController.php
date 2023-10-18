@@ -33,13 +33,15 @@ class HomeController extends AbstractController
             $result[] = [
                 'vacation_id'=>$vacation ->getId(),
                 'employee_id'=>$vacation ->getEmployee()->getId(),
-                'employee' => $vacation -> getEmployee()->getSurname()." ". $vacation -> getEmployee()->getName()??"" ,
-                'dataFrom' => $vacation -> getDateFrom(),
-                'dataTo' => $vacation -> getDateTo(),
+                'employee_name' => $vacation -> getEmployee()->getName()??"",
+                'employee_surname' => $vacation -> getEmployee()->getSurname()??"",
+                'dataFrom' => $vacation -> getDateFrom() ->format('Y-m-d'),
+                'dataTo' => $vacation -> getDateTo()->format('Y-m-d'),
                 'replacement_name' => $vacation ?-> getReplacement() ?-> getName() ??"",
                 'replacement_surname' => $vacation ?-> getReplacement() ?-> getSurname()??"",
             ];
         }
+
 
         return new JsonResponse($result ?? "");
     }
