@@ -75,16 +75,24 @@ class VacationRepository extends ServiceEntityRepository
         return $days;
     }
 
-    public function findEmployeeOnVacation(\DateTime $dateFrom, \DateTime $dateTo) :mixed
+    public function findEmployeeOnVacation(string $dateFrom, string $dateTo) :mixed
     {
         $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
 
         return $this->createQueryBuilder('v')
-            ->andWhere('((:dateFrom BETWEEN v.dateFrom AND v.dateTo) OR (:dateTo BETWEEN v.dateFrom AND v.dateTo) OR (v.dateFrom BETWEEN :dateFrom AND :dateFrom) OR (v.dateFrom BETWEEN :dateFrom AND :dateTo) OR (:dateFrom = v.dateTo) OR (v.dateTo = :dateFrom) OR (v.dateFrom = :dateTo))')
+            ->andWhere('(v.dateTo BETWEEN :dateFrom AND :dateTo OR
+             v.dateFrom BETWEEN :dateFrom AND :dateTo OR 
+             :dateFrom BETWEEN v.dateFrom AND v.dateTo OR 
+             :dateTo BETWEEN v.dateFrom AND v.dateTo OR 
+             v.dateFrom BETWEEN :dateFrom AND :dateFrom OR 
+             v.dateFrom BETWEEN :dateFrom AND :dateTo OR
+             :dateFrom = v.dateTo OR
+              v.dateTo = :dateFrom OR
+              v.dateFrom = :dateTo)')
             ->andWhere('v.status = :status')
             ->setParameter('status', $statusAccepted)
-            ->setParameter('dateFrom', $dateFrom->format('Y-m-d'))
-            ->setParameter('dateTo', $dateTo->format('Y-m-d'))
+            ->setParameter('dateFrom', $dateFrom)
+            ->setParameter('dateTo', $dateTo)
             ->getQuery()
             ->getResult();
     }

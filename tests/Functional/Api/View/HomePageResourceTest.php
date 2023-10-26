@@ -9,6 +9,7 @@ use App\Factory\Vacation\VacationFactory;
 use App\Factory\Vacation\VacationLimitsFactory;
 use App\Factory\Vacation\VacationStatusFactory;
 use App\Factory\VacationTypesFactory;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -22,6 +23,7 @@ class HomePageResourceTest extends KernelTestCase
     {
         VacationStatusFactory::createOne(['name'=>'Oczekujący']);
         VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
+        $potwierdzony = VacationStatusFactory::createOne(['name'=>'Potwierdzony']);
 
         $department = DepartmentFactory::createOne();
         $department2 = DepartmentFactory::createOne();
@@ -38,9 +40,6 @@ class HomePageResourceTest extends KernelTestCase
 
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
-
-        VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType]);
-        VacationFactory::createMany(5,['employee' => $employee, 'type'=>$vacationType]);
 
         $this->browser()
             ->actingAs($user)
