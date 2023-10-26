@@ -56,7 +56,7 @@ final class VacationFactory extends ModelFactory
         VacationLimitsFactory::createOne(['daysLimit'=>225,'employee'=>$employee,'vacationType'=>$vacation_type]);
 
         return [
-            'dateFrom' => self::faker()->dateTime()->setDate(2023,10,16),
+            'dateFrom' => self::faker()->dateTime()->setDate(2023,10,22),
             'dateTo' => self::faker()->dateTimeThisMonth('+20 days'),
             'employee' => $employee,
             'status' => VacationStatusFactory::findOrCreate(['name' => 'Potwierdzony']),

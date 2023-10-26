@@ -6,6 +6,7 @@ use App\Controller\Presist\VacationLimitPresist;
 use App\Entity\Book;
 use App\Entity\Company\Employee;
 use App\Entity\Vacation\VacationLimits;
+use App\Entity\Vacation\VacationTypes;
 use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\VacationTypesRepository;
 use App\Service\EmailService;
@@ -48,8 +49,23 @@ final class EmployeeSubscriber implements EventSubscriberInterface
             $vacationLimit = new VacationLimits();
             $vacationLimit->setEmployee($employee);
             $vacationLimit->setVacationType($type);
-            $vacationLimit->setDaysLimit(0);
+            $vacationLimit->setDaysLimit($this->setDaysLimitDependsOnVacationType($type));
             $this->vacationLimitPresist->add($vacationLimit);
+        }
+    }
+
+    public function setDaysLimitDependsOnVacationType(VacationTypes $type)
+    {
+        switch ($type->getId())
+        {
+            case 2:
+                return 26;
+            case 5:
+                return 4;
+            case 15:
+                return 2;
+            default:
+                return 0;
         }
     }
 }
