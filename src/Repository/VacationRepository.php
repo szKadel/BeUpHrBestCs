@@ -54,13 +54,14 @@ class VacationRepository extends ServiceEntityRepository
 
     public function findVacationUsedByUser(Employee $employee, VacationStatus $vacationStatus, VacationTypes $vacationTypes):int
     {
+        $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
 
         $result = $this->createQueryBuilder('v')
             ->andWhere('v.employee = :employee')
             ->andWhere('v.status = :status')
             ->andWhere('v.type = :types')
             ->setParameter('employee', $employee)
-            ->setParameter('status', $vacationStatus)
+            ->setParameter('status', $statusAccepted)
             ->setParameter('types', $vacationTypes)
             ->getQuery()
             ->getResult();
