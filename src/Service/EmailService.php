@@ -48,7 +48,7 @@ class EmailService
         foreach ($admins as $admin) {
             if(!empty($admin?->getEmail())) {
                 $this->sendEmail(
-                    "HHG - powiadomienie",
+                    "BestCs - powiadomienie",
                     $admin->getEmail(),
                     "adminNewVacation.html.twig",
                     $vacation
