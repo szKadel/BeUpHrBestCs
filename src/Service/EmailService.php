@@ -59,7 +59,7 @@ class EmailService
 
     public function sendReplacementEmployeeNotification(Vacation $vacation):void
     {
-        if (!empty($vacation->getReplacement()->getUser()->getEmail())) {
+        if (!empty($vacation->getReplacement()?->getUser()->getEmail())) {
             $this->sendEmail(
                 "HHG - powiadomienie",
                 $vacation->getReplacement()->getUser()->getEmail(),
