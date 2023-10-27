@@ -112,7 +112,7 @@ class Notification
     /**
      * @return bool|null
      */
-    public function getNotificateReplacementUser(): ?bool
+    public function isNotificateReplacementUser(): ?bool
     {
         return $this->NotificateReplacementUser;
     }
