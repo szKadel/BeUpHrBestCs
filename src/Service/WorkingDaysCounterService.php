@@ -16,6 +16,7 @@ class WorkingDaysCounterService
         $workingDays = 0;
 
         $currentDate = clone $fromDate;
+
         while ($currentDate <= $toDate) {
             if (self::isWorkingDay($currentDate)) {
                 $workingDays++;

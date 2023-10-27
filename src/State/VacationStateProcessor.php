@@ -33,7 +33,8 @@ class VacationStateProcessor implements ProcessorInterface
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmailService $emailService,
         private UserRepository $userRepository,
-        private NotificationRepository $notificationRepository
+        private NotificationRepository $notificationRepository,
+        private VacationStatusRepository $vacationStatusRepository
     )
     {
 
@@ -102,6 +103,15 @@ class VacationStateProcessor implements ProcessorInterface
                         }
                     }
                 }
+
+
+                if ($context["previous_data"]->getType()->getName() != $data->getType()->getName())
+                {
+                    if($context["previous_data"]->getType()->getName() == "Plan Urlopowy" ){
+                        $data->setStatus($this->vacationStatusRepository->findByName("Oczekujący"));
+                    }
+                }
+
             }
         }
 
