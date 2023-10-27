@@ -55,11 +55,12 @@ class VacationStateProcessor implements ProcessorInterface
 
                 if($data->getStatus() != $context["previous_data"]->getStatus())
                 {
-                    if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
-                        $this->checkVacationLimits($data);
-                    }
 
                     if($data->getStatus()->getName() == "Potwierdzony") {
+
+                        if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
+                            $this->checkVacationLimits($data);
+                        }
 
                         $data->setAcceptedAt(new \DateTimeImmutable());
 
