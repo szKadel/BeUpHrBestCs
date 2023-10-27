@@ -55,6 +55,9 @@ class VacationStateProcessor implements ProcessorInterface
 
                 if($data->getStatus() != $context["previous_data"]->getStatus())
                 {
+                    if ($this->notificationRepository -> getNotificationsSettings() ?-> isNotificateUserOnVacationRequestAccept()) {
+                        $this->emailService -> sendNotificationToOwnerOnChangeStatus($data);
+                    }
 
                     if($data->getStatus()->getName() == "Potwierdzony") {
 
@@ -70,10 +73,6 @@ class VacationStateProcessor implements ProcessorInterface
 
                         if ($this->notificationRepository -> getNotificationsSettings() ?->isNotificateReplacementUser() && !empty($data->getReplacement())) {
                             $this->emailService -> sendReplacementEmployeeNotification($data);
-                        }
-
-                        if ($this->notificationRepository -> getNotificationsSettings() ?-> isNotificateUserOnVacationRequestAccept()) {
-                            $this->emailService -> sendNotificationToOwnerOnChangeStatus($data);
                         }
                     }
                 }
