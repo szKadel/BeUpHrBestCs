@@ -54,6 +54,14 @@ class VacationStateProcessor implements ProcessorInterface
 
             } elseif ($operation instanceof Put) {
 
+                if ($context["previous_data"]->getType()->getName() != $data->getType()->getName())
+                {
+                    if($context["previous_data"]->getType()->getName() == "Plan Urlopowy" ){
+                        $data->setStatus($this->vacationStatusRepository->findByName("Oczekujący"));
+                    }
+                }
+
+
                 if($data->getStatus() != $context["previous_data"]->getStatus())
                 {
                     if ($this->notificationRepository -> getNotificationsSettings() ?-> isNotificateUserOnVacationRequestAccept()) {
@@ -103,15 +111,6 @@ class VacationStateProcessor implements ProcessorInterface
                         }
                     }
                 }
-
-
-                if ($context["previous_data"]->getType()->getName() != $data->getType()->getName())
-                {
-                    if($context["previous_data"]->getType()->getName() == "Plan Urlopowy" ){
-                        $data->setStatus($this->vacationStatusRepository->findByName("Oczekujący"));
-                    }
-                }
-
             }
         }
 
