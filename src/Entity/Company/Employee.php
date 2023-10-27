@@ -36,7 +36,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Employee
 {
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
