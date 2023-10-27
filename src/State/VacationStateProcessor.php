@@ -69,8 +69,10 @@ class VacationStateProcessor implements ProcessorInterface
 
                     if($data->getStatus()->getName() == "Potwierdzony") {
 
-                        if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
-                            $this->checkVacationLimits($data);
+                        if($data->getStatus()->getName() != "Anulowany") {
+                            if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
+                                $this->checkVacationLimits($data);
+                            }
                         }
 
                         $data->setAcceptedAt(new \DateTimeImmutable());
@@ -83,33 +85,34 @@ class VacationStateProcessor implements ProcessorInterface
                             $this->emailService -> sendReplacementEmployeeNotification($data);
                         }
                     }
-                }
 
-                if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
-                {
-                    $date = date('Y-m-d');
-                    if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"") {
-                        if($date <= $data->getDateFrom()){
+                    if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
+                    {
+                        $date = date('Y-m-d');
+                        if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"") {
+                            if($date <= $data->getDateFrom()){
+                                $user = $this->security->getUser();
+
+                                $data->setAnnulledAt(new \DateTimeImmutable());
+
+                                $data->setAnnulledBy($this->userRepository->find($user->getId()));
+                            }else{
+                                throw new BadRequestException("Drogi Użytkowniku nie możesz anulować wniosku który już się rozpoczął lub zakończył. Skontaktuj się z przełożonym.", 400);
+                            }
+                        }
+
+                        if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
                             $user = $this->security->getUser();
 
                             $data->setAnnulledAt(new \DateTimeImmutable());
 
-                            $data->setAnnulledBy($this->userRepository->find($user->getId()));
-                        }else{
-                            throw new BadRequestException("Drogi Użytkowniku nie możesz anulować wniosku który już się rozpoczął lub zakończył. Skontaktuj się z przełożonym.", 400);
-                        }
-                    }
-
-                    if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
-                        $user = $this->security->getUser();
-
-                        $data->setAnnulledAt(new \DateTimeImmutable());
-
-                        if ($user instanceof User) {
-                            $data->setAnnulledBy($user);
+                            if ($user instanceof User) {
+                                $data->setAnnulledBy($user);
+                            }
                         }
                     }
                 }
+
             }
         }
 
