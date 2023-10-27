@@ -85,7 +85,7 @@ class EmailService
         if(!empty($vacation->getEmployee()?->getUser()?->getEmail())) {
             $this->sendEmail(
                 "HHG - powiadomienie",
-                $vacation->getReplacement()->getUser()->getEmail(),
+                $vacation->getEmployee()?->getUser()?->getEmail(),
                 "employeeStatusChange.html.twig",$vacation);
         }
     }
