@@ -69,7 +69,7 @@ class VacationStateProcessor implements ProcessorInterface
 
                     if($data->getStatus()->getName() == "Potwierdzony") {
 
-                        if($data->getStatus()->getName() != "Anulowany") {
+                        if($data->getStatus()->getName() != "Anulowany"){
                             if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
                                 $this->checkVacationLimits($data);
                             }
