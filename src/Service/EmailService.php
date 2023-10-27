@@ -61,7 +61,7 @@ class EmailService
     {
         if (!empty($vacation->getReplacement()?->getUser()->getEmail())) {
             $this->sendEmail(
-                "HHG - powiadomienie",
+                "BestCs - powiadomienie",
                 $vacation->getReplacement()->getUser()->getEmail(),
                 "replacementNewVacation.html.twig",$vacation);
         }
@@ -73,7 +73,7 @@ class EmailService
         foreach ($mods as $mod){
             if(!empty($mod?->getEmail())) {
                 $this->sendEmail(
-                    "HHG - powiadomienie",
+                    "BestCs - powiadomienie",
                     $mod->getEmail(),
                     "modNewVacation.html.twig",$vacation);
             }
@@ -84,7 +84,7 @@ class EmailService
     {
         if(!empty($vacation->getEmployee()?->getUser()?->getEmail())) {
             $this->sendEmail(
-                "HHG - powiadomienie",
+                "BestCs - powiadomienie",
                 $vacation->getEmployee()?->getUser()?->getEmail(),
                 "employeeStatusChange.html.twig",$vacation);
         }
@@ -94,7 +94,7 @@ class EmailService
     {
         if(!empty($vacation->getEmployee()->getUser()?->getEmail())) {
             $this->sendEmail(
-                "HHG - powiadomienie",
+                "BestCs - powiadomienie",
                 $vacation->getEmployee()->getUser()->getEmail(),
                 "employeeNewRequest.html.twig",$vacation);
         }
