@@ -79,13 +79,16 @@ class VacationStateProcessor implements ProcessorInterface
                 if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
                 {
                     $date = date('Y-m-d');
-                    if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"" && $date <= $data->getDateFrom()) {
-                        $user = $this->security->getUser();
+                    if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"") {
+                        if($date <= $data->getDateFrom()){
+                            $user = $this->security->getUser();
 
-                        $data->setAnnulledAt(new \DateTimeImmutable());
+                            $data->setAnnulledAt(new \DateTimeImmutable());
 
-                        $data->setAnnulledBy($this->userRepository->find($user->getId()));
-
+                            $data->setAnnulledBy($this->userRepository->find($user->getId()));
+                        }else{
+                            throw new BadRequestException("Drogi Użytkowniku nie możesz anulować wniosku który już się rozpoczął lub zakończył. Skontaktuj się z przełożonym.", 400);
+                        }
                     }
 
                     if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
