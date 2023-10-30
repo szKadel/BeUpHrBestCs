@@ -94,7 +94,7 @@ class SecurityController extends AbstractController
             ]);
     }
 
-    #[Route('/api/user/changePassword')]
+    #[Route('/api/user/changePassword', methods: ['POST'])]
     public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, Request $request)
     {
         $requestParams = json_decode($request->getContent());
