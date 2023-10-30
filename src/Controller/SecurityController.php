@@ -6,6 +6,7 @@ use ApiPlatform\Api\IriConverterInterface;
 use App\Controller\Authorisation\ApiTokenController;
 use App\Entity\ApiToken;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use MongoDB\Driver\Exception\AuthenticationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -19,6 +20,12 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class SecurityController extends AbstractController
 {
+    public function __construct(private EntityManagerInterface $entityManager)
+    {
+
+    }
+
+
     #[Route('/login', name: 'app_login', methods: ['POST'])]
     public function login(IriConverterInterface $iriConverter,#[CurrentUser] User $user = null, ApiTokenController $apiTokenController) :Response
     {
@@ -97,30 +104,30 @@ class SecurityController extends AbstractController
     #[Route('/api/user/changePassword', methods: ['POST'])]
     public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, Request $request)
     {
-        $requestParams = json_decode($request->getContent());
+        $requestData = json_decode($request->getContent(), true);
 
-        if(!empty($requestParams?->oldPassword)){
-            $oldPassword = $requestParams->oldPassword;
-        }else{
+        if (empty($requestData['oldPassword'])) {
             throw new BadRequestException("oldPassword is required");
         }
 
-        if(!empty($requestParams->newPassword)){
-            $newPassword = $requestParams->newPassword;
-        }else {
+        if (empty($requestData['newPassword'])) {
             throw new BadRequestException("newPassword is required");
         }
-        
+
+        $oldPassword = $requestData['oldPassword'];
+        $newPassword = $requestData['newPassword'];
+
         if ($userPasswordHasher->isPasswordValid($user, $oldPassword)) {
-            $user->setPlainPassword($newPassword);
+            // Ustaw nowe hasło dla użytkownika
+            $hashedNewPassword = $userPasswordHasher->hashPassword($user, $newPassword);
+            $user->setPassword($hashedNewPassword);
 
-            if($user->getPlainPassword())
-            {
-                $user->setPassword($userPasswordHasher->hashPassword($user,$user->getPlainPassword()));
+            // Zapisz zmiany (jeśli używasz Doctrine)
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
-                return new Response("Twoje Hasło zostało zmienione.");
-            }
-        }else{
+            return new JsonResponse(["message" => "Twoje hasło zostało zmienione."]);
+        } else {
             throw new BadRequestException("Aktualne hasło jest niepoprawne.");
         }
 
