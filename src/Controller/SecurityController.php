@@ -97,13 +97,13 @@ class SecurityController extends AbstractController
     #[Route('/api/user/changePassword', methods: ['POST'])]
     public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, Request $request)
     {
-        if( $request->query->has('oldPassword')){
+        if( $request->request->has('oldPassword')){
             $oldPassword = $request->request->get('oldPassword');
         }else{
             throw new BadRequestException("oldPassword is required");
         }
 
-        if( $request->query->has('newPassword')){
+        if( $request->request->has('newPassword')){
             $newPassword = $request->request->get('newPassword');
         }else{
             throw new BadRequestException("newPassword is required");
