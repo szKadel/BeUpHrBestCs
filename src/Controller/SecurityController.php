@@ -114,6 +114,10 @@ class SecurityController extends AbstractController
             throw new BadRequestException("newPassword is required");
         }
 
+        if ($requestData['oldPassword'] == $requestData['newPassword']) {
+            throw new BadRequestException("newPassword and newPassword can't be the same");
+        }
+
         $oldPassword = $requestData['oldPassword'];
         $newPassword = $requestData['newPassword'];
 
