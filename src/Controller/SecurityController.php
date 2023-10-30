@@ -122,11 +122,10 @@ class SecurityController extends AbstractController
         $newPassword = $requestData['newPassword'];
 
         if ($userPasswordHasher->isPasswordValid($user, $oldPassword)) {
-            // Ustaw nowe hasło dla użytkownika
+
             $hashedNewPassword = $userPasswordHasher->hashPassword($user, $newPassword);
             $user->setPassword($hashedNewPassword);
 
-            // Zapisz zmiany (jeśli używasz Doctrine)
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
@@ -134,8 +133,5 @@ class SecurityController extends AbstractController
         } else {
             throw new BadRequestException("Aktualne hasło jest niepoprawne.");
         }
-
     }
-
-
 }

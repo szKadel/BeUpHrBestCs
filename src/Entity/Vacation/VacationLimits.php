@@ -55,6 +55,10 @@ class VacationLimits
     #[Assert\LessThanOrEqual(100, message: "Limit nie może być wyższy niż 100 dni")]
     private ?int $daysLimit = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['vacationLimit:read', 'vacationLimit:write','employee:read','vacationRequest:read'])]
+    private ?int $unusedDaysFromPreviousYear = null;
+
     #[ORM\PrePersist]
     public function prePersist(PrePersistEventArgs $args):void
     {
@@ -104,6 +108,18 @@ class VacationLimits
     public function setDaysLimit(int $daysLimit): static
     {
         $this->daysLimit = $daysLimit;
+
+        return $this;
+    }
+
+    public function getUnusedDaysFromPreviousYear(): ?int
+    {
+        return $this->unusedDaysFromPreviousYear;
+    }
+
+    public function setUnusedDaysFromPreviousYear(?int $unusedDaysFromPreviousYear): static
+    {
+        $this->unusedDaysFromPreviousYear = $unusedDaysFromPreviousYear;
 
         return $this;
     }
