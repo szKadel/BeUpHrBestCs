@@ -117,11 +117,13 @@ class SecurityController extends AbstractController
             if($user->getPlainPassword())
             {
                 $user->setPassword($userPasswordHasher->hashPassword($user,$user->getPlainPassword()));
-                return true;
+
+                return new Response("Twoje Hasło zostało zmienione.");
             }
         }else{
             throw new BadRequestException("Aktualne hasło jest niepoprawne.");
         }
+
     }
 
 
