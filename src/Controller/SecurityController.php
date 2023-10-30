@@ -94,23 +94,23 @@ class SecurityController extends AbstractController
             ]);
     }
 
-    #[Route('/api/user/changePassword', methods: ['POST'])]
+    #[Route('/user/changePassword')]
     public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, Request $request)
     {
-        dd($request->request->all());
+        $requestParams = json_decode($request->getContent());
 
-        if( $request->request->has('oldPassword')){
-            $oldPassword = $request->request->get('oldPassword');
+        if(!empty($requestParams?->oldPassword)){
+            $oldPassword = $requestParams->oldPassword;
         }else{
             throw new BadRequestException("oldPassword is required");
         }
 
-        if( $request->request->has('newPassword')){
-            $newPassword = $request->request->get('newPassword');
-        }else{
+        if(!empty($requestParams->newPassword)){
+            $newPassword = $requestParams->newPassword;
+        }else {
             throw new BadRequestException("newPassword is required");
         }
-
+        
         if (!$userPasswordHasher->isPasswordValid($user, $oldPassword)) {
             $user->setPlainPassword($newPassword);
 
@@ -120,7 +120,7 @@ class SecurityController extends AbstractController
                 return true;
             }
         }else{
-            throw new AuthenticationException("Aktualne hasło jest niepoprawne.");
+            throw new BadRequestException("Aktualne hasło jest niepoprawne.");
         }
     }
 
