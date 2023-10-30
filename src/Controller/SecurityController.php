@@ -8,7 +8,9 @@ use App\Entity\ApiToken;
 use App\Entity\User;
 use MongoDB\Driver\Exception\AuthenticationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -93,8 +95,20 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/api/user/changePassword', methods: ['POST'])]
-    public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, string $oldPassword, string $newPassword)
+    public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, Request $request)
     {
+        if( $request->query->has('oldPassword')){
+            $oldPassword = $request->query->get('oldPassword');
+        }else{
+            throw new BadRequestException("DateFrom is required");
+        }
+
+        if( $request->query->has('newPassword')){
+            $newPassword = $request->query->get('newPassword');
+        }else{
+            throw new BadRequestException("DateFrom is required");
+        }
+
         if (!$userPasswordHasher->isPasswordValid($user, $oldPassword)) {
             $user->setPlainPassword($newPassword);
 
