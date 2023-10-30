@@ -100,13 +100,13 @@ class SecurityController extends AbstractController
         if( $request->query->has('oldPassword')){
             $oldPassword = $request->query->get('oldPassword');
         }else{
-            throw new BadRequestException("DateFrom is required");
+            throw new BadRequestException("oldPassword is required");
         }
 
         if( $request->query->has('newPassword')){
             $newPassword = $request->query->get('newPassword');
         }else{
-            throw new BadRequestException("DateFrom is required");
+            throw new BadRequestException("newPassword is required");
         }
 
         if (!$userPasswordHasher->isPasswordValid($user, $oldPassword)) {
