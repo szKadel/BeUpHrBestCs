@@ -111,7 +111,7 @@ class SecurityController extends AbstractController
             throw new BadRequestException("newPassword is required");
         }
         
-        if (!$userPasswordHasher->isPasswordValid($user, $oldPassword)) {
+        if ($userPasswordHasher->isPasswordValid($user, $oldPassword)) {
             $user->setPlainPassword($newPassword);
 
             if($user->getPlainPassword())
