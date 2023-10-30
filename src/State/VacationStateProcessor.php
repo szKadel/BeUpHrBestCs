@@ -133,7 +133,6 @@ class VacationStateProcessor implements ProcessorInterface
 
     private function checkVacationLimits(Vacation $vacation)
     {
-
         $vacationUsedInDays = $this->vacationRepository->findVacationUsedByUser(
             $vacation->getEmployee(),
             $vacation->getStatus(),

@@ -82,7 +82,7 @@ class VacationRequestResourceTest extends KernelTestCase
          VacationTypesFactory::createOne();
         $vacationType = VacationTypesFactory::createOne();
         NotificationFactory::createOne();
-        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>4]);
+        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
 
         $this->browser()
@@ -95,7 +95,7 @@ class VacationRequestResourceTest extends KernelTestCase
                     'dateTo'=>'2023-09-21'
                 ]
             ])
-            ->dd();
+            ->assertStatus(201);
 
         $this->browser()
             ->actingAs($user)

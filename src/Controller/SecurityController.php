@@ -6,10 +6,12 @@ use ApiPlatform\Api\IriConverterInterface;
 use App\Controller\Authorisation\ApiTokenController;
 use App\Entity\ApiToken;
 use App\Entity\User;
+use MongoDB\Driver\Exception\AuthenticationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -88,6 +90,22 @@ class SecurityController extends AbstractController
                 'userName' => $user->getUsername(),
                 'employee' => $employee ?? null
             ]);
+    }
+
+    #[Route('/user/changePassword',name: 'app_logout', methods: ['POST'])]
+    public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, string $oldPassword, string $newPassword)
+    {
+        if (!$userPasswordHasher->isPasswordValid($user, $oldPassword)) {
+            $user->setPlainPassword($newPassword);
+
+            if($user->getPlainPassword())
+            {
+                $user->setPassword($userPasswordHasher->hashPassword($user,$user->getPlainPassword()));
+                return true;
+            }
+        }else{
+            throw new AuthenticationException("Aktualne hasło jest niepoprawne.");
+        }
     }
 
 
