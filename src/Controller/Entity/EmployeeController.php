@@ -2,7 +2,7 @@
 
 namespace App\Controller\Entity;
 
-use ApiPlatform\Metadata\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Company\Department;
 use App\Entity\Company\Employee;
 use App\Entity\User;
@@ -30,7 +30,7 @@ class EmployeeController extends AbstractController
         private ApiTokenRepository $apiTokenRepository,
         private VacationRepository $vacationRepository,
         private EntityManagerInterface $entityManager,
-        private \ApiPlatform\Api\IriConverterInterface $iriConverter
+        private IriConverterInterface $iriConverter
     )
     {
 
