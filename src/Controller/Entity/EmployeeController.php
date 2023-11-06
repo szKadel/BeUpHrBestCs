@@ -144,5 +144,13 @@ class EmployeeController extends AbstractController
        return new Response(json_encode($postData),200);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('api/employee/department/', methods: ['PUT'])]
+    public function updateExternalDepartmentsRight(Request $request, EmployeeExtendedAccessesRepository $employeeExtendedAccessesRepository)
+    {
+        throw new BadRequestException("Funkcjonalnosc w trakcie modyfikacji");
+
+        return new Response(json_encode($postData),200);
+    }
 
 }
