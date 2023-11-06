@@ -79,7 +79,6 @@ class SecurityController extends AbstractController
         }
 
         if(!empty($user->getEmployee())) {
-
             $employee = [
                     '@id' => $iriConverter->getIriFromResource($user->getEmployee()) ?? "",
                     'id' => $user->getEmployee()?->getId(),
@@ -91,43 +90,48 @@ class SecurityController extends AbstractController
                         'name' => $user->getEmployee()->getDepartment()->getName() ?? ""
                     ]
                 ] ?? null;
-
-            $extendedAccess = $user->getEmployee()->getEmployeeExtendedAccesses();
-            if(!empty($extendedAccess))  {
-                foreach ($extendedAccess as $access) {
-                    $employee["employeeExtendedAccesses"][] = [
-                        'department' => [
-                            '@id' => $iriConverter->getIriFromResource($access->getDepartment()) ?? "",
-                            'id' => $access->getDepartment()->getId() ?? "",
-                            'name' => $access->getDepartment()->getName() ?? ""
-                        ]
-                    ];
-                }
-            }
         }
 
         return new JsonResponse([
-            'id' =>$user->getId(),
-            'email'=>$user->getEmail(),
-            'roles'=>$user->getRoles(),
-            'userName' => $user->getUsername(),
-            'employee' => $employee ?? null
-        ]);
+                'id' =>$user->getId(),
+                'email'=>$user->getEmail(),
+                'roles'=>$user->getRoles(),
+                'userName' => $user->getUsername(),
+                'employee' => $employee ?? null
+            ]);
     }
 
     #[Route('/api/user/changePassword', methods: ['POST'])]
-    public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, string $oldPassword, string $newPassword)
+    public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, Request $request)
     {
-        if (!$userPasswordHasher->isPasswordValid($user, $oldPassword)) {
-            $user->setPlainPassword($newPassword);
+        $requestData = json_decode($request->getContent(), true);
 
-            if($user->getPlainPassword())
-            {
-                $user->setPassword($userPasswordHasher->hashPassword($user,$user->getPlainPassword()));
-                return true;
-            }
-        }else{
-            throw new AuthenticationException("Aktualne hasło jest niepoprawne.");
+        if (empty($requestData['oldPassword'])) {
+            throw new BadRequestException("oldPassword is required");
+        }
+
+        if (empty($requestData['newPassword'])) {
+            throw new BadRequestException("newPassword is required");
+        }
+
+        if ($requestData['oldPassword'] == $requestData['newPassword']) {
+            throw new BadRequestException("newPassword and newPassword can't be the same");
+        }
+
+        $oldPassword = $requestData['oldPassword'];
+        $newPassword = $requestData['newPassword'];
+
+        if ($userPasswordHasher->isPasswordValid($user, $oldPassword)) {
+
+            $hashedNewPassword = $userPasswordHasher->hashPassword($user, $newPassword);
+            $user->setPassword($hashedNewPassword);
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            return new JsonResponse(["message" => "Twoje hasło zostało zmienione."]);
+        } else {
+            throw new BadRequestException("Aktualne hasło jest niepoprawne.");
         }
     }
 }
