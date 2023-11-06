@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Entity\Company;
+use App\Entity\EmployeeExtendedAccesses;
 use App\Entity\User;
 use App\Entity\Vacation\VacationLimits;
 use App\Entity\Vacation\Vacation;
@@ -21,12 +22,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
-#[ORM\HasLifecycleCallbacks]
-
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
-        new GetCollection(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
+        new get(normalizationContext: ['groups' => ['employee:read','employeeExtended:read']],security: "is_granted('ROLE_USER')"),
+        new GetCollection(normalizationContext: ['groups' => ['employee:read','employeeExtended:read']],security: "is_granted('ROLE_USER')"),
         new Post(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
         new Put(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')")
     ],
@@ -36,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Employee
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -87,11 +87,16 @@ class Employee
     #[Groups(['user:read','user:write','employee:read','employee:write'])]
     private ?Company $company = null;
 
+    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: EmployeeExtendedAccesses::class, orphanRemoval: true)]
+    #[Groups(['user:read','user:write','employeeExtended:read'])]
+    private Collection $employeeExtendedAccesses;
+
 
     public function __construct()
     {
         $this->vacationLimits = new ArrayCollection();
         $this->vacations = new ArrayCollection();
+        $this->employeeExtendedAccesses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -254,6 +259,36 @@ class Employee
     public function setCompany(?Company $company): static
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EmployeeExtendedAccesses>
+     */
+    public function getEmployeeExtendedAccesses(): Collection
+    {
+        return $this->employeeExtendedAccesses;
+    }
+
+    public function addEmployeeExtendedAccess(EmployeeExtendedAccesses $employeeExtendedAccess): static
+    {
+        if (!$this->employeeExtendedAccesses->contains($employeeExtendedAccess)) {
+            $this->employeeExtendedAccesses->add($employeeExtendedAccess);
+            $employeeExtendedAccess->setEmployee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEmployeeExtendedAccess(EmployeeExtendedAccesses $employeeExtendedAccess): static
+    {
+        if ($this->employeeExtendedAccesses->removeElement($employeeExtendedAccess)) {
+            // set the owning side to null (unless already changed)
+            if ($employeeExtendedAccess->getEmployee() === $this) {
+                $employeeExtendedAccess->setEmployee(null);
+            }
+        }
 
         return $this;
     }

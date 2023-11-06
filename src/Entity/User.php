@@ -25,10 +25,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
-        new GetCollection(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
-        new Post(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN') "),
-        new Put(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN')"),
+        new get(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD') or is_granted('ROLE_KADR')"),
+        new GetCollection(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD') or is_granted('ROLE_KADR')"),
+        new Post(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN')"),
+        new Put(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_KADR')"),
         new Delete(security: "is_granted('ROLE_ADMIN')")
     ],
     paginationClientItemsPerPage: true,
@@ -73,13 +73,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[SerializedName('password')]
     private ?string $plainPassword = null;
 
-    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Vacation::class)]
-    private Collection $VacationCreated;
+    #[ORM\OneToMany(mappedBy: 'acceptedBy', targetEntity: Vacation::class)]
+    private Collection $AcceptedVacations;
+
+    #[ORM\OneToMany(mappedBy: 'AnnulledBy', targetEntity: Vacation::class)]
+    private Collection $AnnulledVacationRequest;
 
     public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
-        $this->VacationCreated = new ArrayCollection();
+        $this->AcceptedVacations = new ArrayCollection();
+        $this->AnnulledVacationRequest = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -184,7 +188,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeApiToken(ApiToken $apiToken): static
     {
         if ($this->apiTokens->removeElement($apiToken)) {
-            // set the owning side to null (unless already changed)
             if ($apiToken->getOwnedBy() === $this) {
                 $apiToken->setOwnedBy(null);
             }
@@ -225,30 +228,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->plainPassword??null;
     }
 
+
+
     /**
      * @return Collection<int, Vacation>
      */
-    public function getAcceptedBy(): Collection
+    public function getAcceptedVacations(): Collection
     {
-        return $this->VacationCreated;
+        return $this->AcceptedVacations;
     }
 
-    public function addAcceptedBy(Vacation $acceptedBy): static
+    public function addAcceptedVacation(Vacation $acceptedVacation): static
     {
-        if (!$this->VacationCreated->contains($acceptedBy)) {
-            $this->VacationCreated->add($acceptedBy);
-            $acceptedBy->setCreatedBy($this);
+        if (!$this->AcceptedVacations->contains($acceptedVacation)) {
+            $this->AcceptedVacations->add($acceptedVacation);
+            $acceptedVacation->setAcceptedBy($this);
         }
 
         return $this;
     }
 
-    public function removeAcceptedBy(Vacation $acceptedBy): static
+    public function removeAcceptedVacation(Vacation $acceptedVacation): static
     {
-        if ($this->VacationCreated->removeElement($acceptedBy)) {
+        if ($this->AcceptedVacations->removeElement($acceptedVacation)) {
             // set the owning side to null (unless already changed)
-            if ($acceptedBy->getCreatedBy() === $this) {
-                $acceptedBy->setCreatedBy(null);
+            if ($acceptedVacation->getAcceptedBy() === $this) {
+                $acceptedVacation->setAcceptedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vacation>
+     */
+    public function getAnnulledVacationRequest(): Collection
+    {
+        return $this->AnnulledVacationRequest;
+    }
+
+    public function addAnnulledVacationRequest(Vacation $annulledVacationRequest): static
+    {
+        if (!$this->AnnulledVacationRequest->contains($annulledVacationRequest)) {
+            $this->AnnulledVacationRequest->add($annulledVacationRequest);
+            $annulledVacationRequest->setAnnulledBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnulledVacationRequest(Vacation $annulledVacationRequest): static
+    {
+        if ($this->AnnulledVacationRequest->removeElement($annulledVacationRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($annulledVacationRequest->getAnnulledBy() === $this) {
+                $annulledVacationRequest->setAnnulledBy(null);
             }
         }
 

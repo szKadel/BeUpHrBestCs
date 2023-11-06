@@ -33,8 +33,7 @@ class VacationStateProcessor implements ProcessorInterface
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmailService $emailService,
         private UserRepository $userRepository,
-        private NotificationRepository $notificationRepository,
-        private VacationStatusRepository $vacationStatusRepository
+        private NotificationRepository $notificationRepository
     )
     {
 
@@ -49,31 +48,16 @@ class VacationStateProcessor implements ProcessorInterface
     {
         if($data instanceof Vacation) {
             if($operation instanceof Post) {
-
                 $this->vacationRequestController->onVacationRequestPost($data);
 
             } elseif ($operation instanceof Put) {
-
-                if ($context["previous_data"]->getType()->getName() != $data->getType()->getName())
-                {
-                    if($context["previous_data"]->getType()->getName() == "Plan urlopowy" ){
-                        $data->setStatus($this->vacationStatusRepository->findByName("Oczekujący"));
-                    }
+                if ($data->getType()->getId() != 1 || $data->getType()->getId() != 11) {
+                    $this->checkVacationLimits($data);
                 }
 
                 if($data->getStatus() != $context["previous_data"]->getStatus())
                 {
-                    if ($this->notificationRepository -> getNotificationsSettings() ?-> isNotificateUserOnVacationRequestAccept()) {
-                        $this->emailService -> sendNotificationToOwnerOnChangeStatus($data);
-                    }
-
                     if($data->getStatus()->getName() == "Potwierdzony") {
-
-                        if($data->getStatus()->getName() != "Anulowany"){
-                            if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
-                                $this->checkVacationLimits($data);
-                            }
-                        }
 
                         $data->setAcceptedAt(new \DateTimeImmutable());
 
@@ -84,35 +68,44 @@ class VacationStateProcessor implements ProcessorInterface
                         if ($this->notificationRepository -> getNotificationsSettings() ?->isNotificateReplacementUser() && !empty($data->getReplacement())) {
                             $this->emailService -> sendReplacementEmployeeNotification($data);
                         }
+
+                        if ($this->notificationRepository -> getNotificationsSettings() ?-> isNotificateUserOnVacationRequestAccept()) {
+                            $this->emailService -> sendNotificationToOwnerOnChangeStatus($data);
+                        }
                     }
 
-                    if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
-                    {
-                        $date = date('Y-m-d');
-                        if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"") {
-                            if($date <= $data->getDateFrom()){
-                                $user = $this->security->getUser();
-
-                                $data->setAnnulledAt(new \DateTimeImmutable());
-
-                                $data->setAnnulledBy($this->userRepository->find($user->getId()));
-                            }else{
-                                throw new BadRequestException("Drogi Użytkowniku nie możesz anulować wniosku który już się rozpoczął lub zakończył. Skontaktuj się z przełożonym.", 400);
-                            }
-                        }
-
-                        if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
-                            $user = $this->security->getUser();
-
-                            $data->setAnnulledAt(new \DateTimeImmutable());
-
-                            if ($user instanceof User) {
-                                $data->setAnnulledBy($user);
-                            }
+                    if($data->getStatus()->getName() == "Odrzucony") {
+                        if($this -> security -> isGranted('ROLE_KADR')){
+                            throw new BadRequestException('Brak Uprawnień');
                         }
                     }
                 }
 
+                if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
+                {
+                    if($this -> security -> isGranted('ROLE_KADR')){
+                        throw new BadRequestException('Brak Uprawnień');
+                    }
+
+                    $date = date('Y-m-d');
+                    if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"" && $date <= $data->getDateFrom()) {
+                        $user = $this->security->getUser();
+
+                        $data->setAnnulledAt(new \DateTimeImmutable());
+
+                        $data->setAnnulledBy($this->userRepository->find($user->getId()));
+                    }
+
+                    if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
+                        $user = $this->security->getUser();
+
+                        $data->setAnnulledAt(new \DateTimeImmutable());
+
+                        if ($user instanceof User) {
+                            $data->setAnnulledBy($user);
+                        }
+                    }
+                }
             }
         }
 
@@ -127,12 +120,12 @@ class VacationStateProcessor implements ProcessorInterface
                 }
             }
         }
-
         $this->innerProcessor->process($data, $operation, $uriVariables, $context);
     }
 
     private function checkVacationLimits(Vacation $vacation)
     {
+
         $vacationUsedInDays = $this->vacationRepository->findVacationUsedByUser(
             $vacation->getEmployee(),
             $vacation->getStatus(),

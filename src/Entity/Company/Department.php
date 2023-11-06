@@ -5,6 +5,7 @@ namespace App\Entity\Company;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\Entity\EmployeeExtendedAccesses;
 use App\Repository\DepartmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -39,9 +40,13 @@ class Department
     #[ORM\Column(nullable: true)]
     private ?int $bitrixId = null;
 
+    #[ORM\OneToMany(mappedBy: 'department', targetEntity: EmployeeExtendedAccesses::class, orphanRemoval: true)]
+    private Collection $employeeExtendedAccesses;
+
     public function __construct()
     {
         $this->employees = new ArrayCollection();
+        $this->employeeExtendedAccesses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,6 +104,36 @@ class Department
     public function setBitrixId(?int $bitrixId): static
     {
         $this->bitrixId = $bitrixId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EmployeeExtendedAccesses>
+     */
+    public function getEmployeeExtendedAccesses(): Collection
+    {
+        return $this->employeeExtendedAccesses;
+    }
+
+    public function addEmployeeExtendedAccess(EmployeeExtendedAccesses $employeeExtendedAccess): static
+    {
+        if (!$this->employeeExtendedAccesses->contains($employeeExtendedAccess)) {
+            $this->employeeExtendedAccesses->add($employeeExtendedAccess);
+            $employeeExtendedAccess->setDepartment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEmployeeExtendedAccess(EmployeeExtendedAccesses $employeeExtendedAccess): static
+    {
+        if ($this->employeeExtendedAccesses->removeElement($employeeExtendedAccess)) {
+            // set the owning side to null (unless already changed)
+            if ($employeeExtendedAccess->getDepartment() === $this) {
+                $employeeExtendedAccess->setDepartment(null);
+            }
+        }
 
         return $this;
     }

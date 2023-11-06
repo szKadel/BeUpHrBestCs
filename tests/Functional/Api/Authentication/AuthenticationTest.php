@@ -122,21 +122,5 @@ class AuthenticationTest extends KernelTestCase
             )->assertStatus(200);
 
         $user = UserFactory::createOne(['password'=>'pass']);
-
-        $this->browser()
-            ->actingAs($user)
-            ->post('/user/changePassword',['json'=>[
-                'oldPassword'=>'pass',
-                'newPassword'=>'test'
-            ]
-            ])->dd();
-
-        $this->browser()
-            ->actingAs($user)
-            ->post('/user/changePassword',[
-                'json'=>[
-                    'oldPassword'=>'pass'
-                ]])
-            ->dd();
     }
 }
