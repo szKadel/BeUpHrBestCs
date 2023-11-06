@@ -20,7 +20,7 @@ class HomeController extends AbstractController
 
     #[Route('/api/vacations/week/current')]
     #[IsGranted('ROLE_USER')]
-    public function getEmployeeOnVacation()
+    public function getEmployeeOnVacation() : JsonResponse
     {
         $today = date('Y-m-d');
 
@@ -43,7 +43,6 @@ class HomeController extends AbstractController
             ];
         }
 
-
-        return new JsonResponse($result ?? "");
+        return new JsonResponse($result ?? []);
     }
 }

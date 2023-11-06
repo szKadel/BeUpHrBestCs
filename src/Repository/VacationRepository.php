@@ -90,6 +90,7 @@ class VacationRepository extends ServiceEntityRepository
              :dateFrom = v.dateTo OR
               v.dateTo = :dateFrom OR
               v.dateFrom = :dateTo)')
+            ->andWhere('v.dateTo => :dateFrom')
             ->andWhere('v.status = :status')
             ->setParameter('status', $statusAccepted)
             ->setParameter('dateFrom', $dateFrom)
