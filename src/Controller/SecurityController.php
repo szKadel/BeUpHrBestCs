@@ -115,7 +115,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/api/user/changePassword',name: 'app_logout', methods: ['POST'])]
+    #[Route('/api/user/changePassword', methods: ['POST'])]
     public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, string $oldPassword, string $newPassword)
     {
         if (!$userPasswordHasher->isPasswordValid($user, $oldPassword)) {
