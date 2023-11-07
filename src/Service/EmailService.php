@@ -80,7 +80,7 @@ class EmailService
         }
         $extMods = $vacation->getEmployee()->getDepartment()->getEmployeeExtendedAccesses();
         foreach ($extMods as $extMod){
-            if(!empty($extMod->getEmployee()->getUser()?->getEmail())) {
+            if(!empty($extMod->getEmployee()->getUser()?->getEmail() )) {
                 $this->sendEmail(
                     "BestCs - powiadomienie",
                     $extMod->getEmployee()->getUser()?->getEmail(),
