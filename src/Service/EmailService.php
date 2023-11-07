@@ -80,10 +80,10 @@ class EmailService
         }
         $extMods = $vacation->getEmployee()->getDepartment()->getEmployeeExtendedAccesses();
         foreach ($extMods as $extMod){
-            if(!empty($mod?->getEmail())) {
+            if(!empty($extMod->getUser()?->getEmail())) {
                 $this->sendEmail(
                     "BestCs - powiadomienie",
-                    $extMod->getEmployee()->getUser()->getEmail(),
+                    $extMod->getUser()->getEmail(),
                     "modNewVacation.html.twig",$vacation);
             }
         }
