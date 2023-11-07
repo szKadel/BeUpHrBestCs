@@ -148,7 +148,17 @@ class EmployeeController extends AbstractController
     #[Route('api/employee/department/', methods: ['PUT'])]
     public function updateExternalDepartmentsRight(Request $request, EmployeeExtendedAccessesRepository $employeeExtendedAccessesRepository)
     {
-        throw new BadRequestException("Funkcjonalnosc w trakcie modyfikacji");
+        $postData = json_decode($request->getContent());
+
+        $records = $employeeExtendedAccessesRepository->findBy(['employee' => $this->iriConverter->getResourceFromIri($postData ?->iri ?? throw new BadRequestException("Bad Exception"))]);
+
+        foreach ($records as $record) {
+            $employeeExtendedAccessesRepository->removeExtendedAccessById($record->getId());
+        }
+
+        if(!empty($postData ?->departments)) {
+            $this->setExternalDepartmentsRight($request, $employeeExtendedAccessesRepository);
+        }
 
         return new Response(json_encode($postData),200);
     }

@@ -34,6 +34,15 @@ class EmployeeExtendedAccessesRepository extends ServiceEntityRepository
         $this->entityManager->flush();
     }
 
+    public function removeExtendedAccessById(int $id): void
+    {
+        $extendedAccess = $this->find($id);
+
+        if ($extendedAccess !== null) {
+            $this->_em->remove($extendedAccess);
+            $this->_em->flush();
+        }
+    }
 
 
 //    /**
