@@ -43,7 +43,7 @@ class EmployeeVacationLimitRepository extends ServiceEntityRepository
             ->setParameter('emp', $employee)
             ->setParameter('vacationType', $vacationTypes)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()[0] ?? null
             ;
     }
 
