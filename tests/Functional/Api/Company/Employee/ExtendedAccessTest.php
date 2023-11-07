@@ -70,11 +70,10 @@ class ExtendedAccessTest extends KernelTestCase
             ])
             ->assertStatus(200);
 
-
         // Wnioski jako mod
         $this->browser()
             ->actingAs($mod)
             ->get('api/vacations',[])
-            ->dd();
+            ->assertStatus(200);
     }
 }

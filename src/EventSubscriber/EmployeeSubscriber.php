@@ -30,7 +30,7 @@ final class EmployeeSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::VIEW => ['addNewEmployee', EventPriorities::POST_WRITE],
+            KernelEvents::VIEW => ['addNewEmployee', EventPriorities::POST_WRITE,EventPriorities::POST_WRITE],
         ];
     }
 
