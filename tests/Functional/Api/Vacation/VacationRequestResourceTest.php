@@ -160,8 +160,7 @@ class VacationRequestResourceTest extends KernelTestCase
                     'dateTo'=>'2023-09-21',
                     'replacement'=> 'api/employees/'.$employeeMod->getId(),
                 ]
-            ])
-            ->assertStatus(201);
+            ])->assertStatus(201);
 
     }
     public function testVacationReplacement()

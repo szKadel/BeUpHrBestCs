@@ -79,6 +79,7 @@ class SecurityController extends AbstractController
         }
 
         if(!empty($user->getEmployee())) {
+
             $employee = [
                     '@id' => $iriConverter->getIriFromResource($user->getEmployee()) ?? "",
                     'id' => $user->getEmployee()?->getId(),
@@ -90,15 +91,28 @@ class SecurityController extends AbstractController
                         'name' => $user->getEmployee()->getDepartment()->getName() ?? ""
                     ]
                 ] ?? null;
+
+            $extendedAccess = $user->getEmployee()->getEmployeeExtendedAccesses();
+            if(!empty($extendedAccess))  {
+                foreach ($extendedAccess as $access) {
+                    $employee["employeeExtendedAccesses"][] = [
+                        'department' => [
+                            '@id' => $iriConverter->getIriFromResource($access->getDepartment()) ?? "",
+                            'id' => $access->getDepartment()->getId() ?? "",
+                            'name' => $access->getDepartment()->getName() ?? ""
+                        ]
+                    ];
+                }
+            }
         }
 
         return new JsonResponse([
-                'id' =>$user->getId(),
-                'email'=>$user->getEmail(),
-                'roles'=>$user->getRoles(),
-                'userName' => $user->getUsername(),
-                'employee' => $employee ?? null
-            ]);
+            'id' =>$user->getId(),
+            'email'=>$user->getEmail(),
+            'roles'=>$user->getRoles(),
+            'userName' => $user->getUsername(),
+            'employee' => $employee ?? null
+        ]);
     }
 
     #[Route('/api/user/changePassword', methods: ['POST'])]

@@ -75,6 +75,6 @@ class ExtendedAccessTest extends KernelTestCase
         $this->browser()
             ->actingAs($mod)
             ->get('api/employees/'.$employeeMod->getId(),[])
-            ->dd();
+            ->assertJsonMatches('"employeeExtendedAccesses"',[]);
     }
 }

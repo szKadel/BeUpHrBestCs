@@ -44,6 +44,6 @@ class HomePageResourceTest extends KernelTestCase
         $this->browser()
             ->actingAs($user)
             ->get("/api/vacations/week/current")
-            ->dd();
+            ->assertStatus(200);
     }
 }

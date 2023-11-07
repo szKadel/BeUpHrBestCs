@@ -125,7 +125,7 @@ class EmployeeController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('api/employee/department/', methods: ['POST'])]
-    public function setExternalDepartmentsRight(Request $request, EmployeeExtendedAccessesRepository $employeeExtendedAccessesRepository)
+    public function setExternalDepartmentsRight(Request $request, EmployeeExtendedAccessesRepository $employeeExtendedAccessesRepository): Response
     {
         $postData = json_decode($request->getContent());
 
@@ -146,7 +146,7 @@ class EmployeeController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('api/employee/department/', methods: ['PUT'])]
-    public function updateExternalDepartmentsRight(Request $request, EmployeeExtendedAccessesRepository $employeeExtendedAccessesRepository)
+    public function updateExternalDepartmentsRight(Request $request, EmployeeExtendedAccessesRepository $employeeExtendedAccessesRepository): Response
     {
         $postData = json_decode($request->getContent());
 
