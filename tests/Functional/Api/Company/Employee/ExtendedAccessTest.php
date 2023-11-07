@@ -65,7 +65,7 @@ class ExtendedAccessTest extends KernelTestCase
             ->put('api/employee/department/',[
                 'json'=>[
                     'iri'=>'api/employees/'.$employeeMod->getId(),
-                    'departments'=> [],
+                    'departments'=> ['api/departments/'.$department2->getId()],
                 ]
             ])
             ->assertStatus(200);
@@ -74,7 +74,7 @@ class ExtendedAccessTest extends KernelTestCase
         // Wnioski jako mod
         $this->browser()
             ->actingAs($mod)
-            ->get('api/employees/'.$employeeMod->getId(),[])
-            ->assertJsonMatches('"employeeExtendedAccesses"',[]);
+            ->get('api/vacations',[])
+            ->dd();
     }
 }

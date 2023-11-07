@@ -49,19 +49,23 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
 
     public function groupModerator(QueryBuilder $queryBuilder, string $resourceClass)
     {
-        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || null === $user = $this->security->getUser()) {
+
+        if (Vacation::class !== $resourceClass || !$this->security->isGranted('ROLE_MOD') || null === $user = $this->security->getUser()) {
             return;
         }
 
-        if($this->security->isGranted('ROLE_MOD')){
-            $rootAlias = $queryBuilder->getRootAliases()[0];
+        $rootAlias = $queryBuilder->getRootAliases()[0];
 
-            $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
-            $queryBuilder->andWhere('u.department = :department');
-            $queryBuilder->setParameter('department', $user->getEmployee()->getDepartment());
-            $this->security->getUser()->getEmployee()->getEmployeeExtendedAccesses();
+        $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
+        $queryBuilder->andWhere('u.department = :department');
+        $queryBuilder->setParameter('department', $user->getEmployee()->getDepartment());
 
-
+        foreach ($this->security->getUser()->getEmployee()->getEmployeeExtendedAccesses() as $employeeExtendedAccesses){
+            $key = "department".$employeeExtendedAccesses->getId();
+            $queryBuilder->orWhere('u.department = :'.$key);
+            $queryBuilder->setParameter($key, $employeeExtendedAccesses->getDepartment());
         }
+
+
     }
 }
