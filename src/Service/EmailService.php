@@ -78,6 +78,16 @@ class EmailService
                     "modNewVacation.html.twig",$vacation);
             }
         }
+        $extMods = $vacation->getEmployee()->getDepartment()->getEmployeeExtendedAccesses();
+        foreach ($extMods as $mod){
+            if(!empty($mod?->getEmail())) {
+                $this->sendEmail(
+                    "BestCs - powiadomienie",
+                    $mod->getEmployee()->getUser()->getEmail(),
+                    "modNewVacation.html.twig",$vacation);
+            }
+        }
+
     }
 
     public function sendNotificationToOwnerOnChangeStatus(Vacation $vacation):void
