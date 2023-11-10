@@ -95,5 +95,22 @@ class EmployeeResourceTest extends KernelTestCase
             ->assertStatus(200);
     }
 
+    public function testEmployeeUnActive()
+    {
+        $department = DepartmentFactory::createOne();
+
+        $employee = EmployeeFactory::createOne(['department'    =>  $department]);
+        $user = UserFactory::createOne(['roles'=>["ROLE_ADMIN"],'employee' => $employee]);
+
+        $this->browser()
+            ->actingAs($user)
+            ->put('/api/employees/'.$employee->getId(),[
+                'json'=>[
+                    'unactive'=> true
+                ]
+            ])
+            ->assertStatus(200);
+    }
+
 
 }

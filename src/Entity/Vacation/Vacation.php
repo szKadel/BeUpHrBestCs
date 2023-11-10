@@ -128,6 +128,9 @@ class Vacation
     #[Groups(['vacationRequest:read'])]
     private ?User $AnnulledBy = null;
 
+    #[ORM\Column]
+    private ?bool $active = null;
+
 
     public function __construct()
     {
@@ -349,5 +352,10 @@ class Vacation
         $this->AnnulledBy = $AnnulledBy;
 
         return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
     }
 }
