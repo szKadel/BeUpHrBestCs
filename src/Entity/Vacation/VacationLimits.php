@@ -39,7 +39,7 @@ class VacationLimits
 
     #[ORM\ManyToOne(inversedBy: 'vacationLimits')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['vacationLimit:read', 'vacationLimit:write'])]
+    #[Groups([ 'vacationLimit:write'])]
     #[Assert\NotBlank]
     private ?Employee $Employee = null;
 

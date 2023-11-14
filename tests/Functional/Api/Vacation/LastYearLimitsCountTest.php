@@ -39,6 +39,11 @@ class LastYearLimitsCountTest extends KernelTestCase
         $this->browser()
             ->actingAs($user)
             ->get("/Vacations/YearSummation")
+            ->assertStatus(200);
+
+        $this->browser()
+            ->actingAs($user)
+            ->get("/api/vacation_limits")
             ->dd();
     }
 
