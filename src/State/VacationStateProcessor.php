@@ -17,6 +17,7 @@ use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
 use App\Repository\VacationStatusRepository;
 use App\Service\EmailService;
+use App\Service\Vacation\CounterVacationDays;
 use DateTime;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
@@ -33,7 +34,8 @@ class VacationStateProcessor implements ProcessorInterface
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmailService $emailService,
         private UserRepository $userRepository,
-        private NotificationRepository $notificationRepository
+        private NotificationRepository $notificationRepository,
+        private CounterVacationDays $counterVacationDays
     )
     {
 
@@ -126,9 +128,8 @@ class VacationStateProcessor implements ProcessorInterface
     private function checkVacationLimits(Vacation $vacation)
     {
 
-        $vacationUsedInDays = $this->vacationRepository->findVacationUsedByUser(
+        $vacationUsedInDays = $this->counterVacationDays->countVacationSpendDays(
             $vacation->getEmployee(),
-            $vacation->getStatus(),
             $vacation->getType()
         );
 

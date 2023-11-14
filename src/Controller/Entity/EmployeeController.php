@@ -119,9 +119,7 @@ class EmployeeController extends AbstractController
 
         $this->entityManager->remove($employee);
         $this->entityManager->flush();
-
     }
-
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('api/employee/department/', methods: ['POST'])]

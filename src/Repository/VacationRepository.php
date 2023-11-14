@@ -52,11 +52,11 @@ class VacationRepository extends ServiceEntityRepository
 
     }
 
-    public function findVacationUsedByUser(Employee $employee, VacationStatus $vacationStatus, VacationTypes $vacationTypes):int
+    public function findVacationUsedByUser(Employee $employee, VacationTypes $vacationTypes):array | null
     {
         $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
 
-        $result = $this->createQueryBuilder('v')
+        return  $this->createQueryBuilder('v')
             ->andWhere('v.employee = :employee')
             ->andWhere('v.status = :status')
             ->andWhere('v.type = :types')
@@ -65,15 +65,6 @@ class VacationRepository extends ServiceEntityRepository
             ->setParameter('types', $vacationTypes)
             ->getQuery()
             ->getResult();
-        $days = 0;
-
-        if(!empty($result)) {
-            foreach ($result as $element) {
-                $days += $element->getSpendVacationDays();
-            }
-        }
-
-        return $days;
     }
 
     public function findEmployeeOnVacation(string $dateFrom, string $dateTo) :mixed

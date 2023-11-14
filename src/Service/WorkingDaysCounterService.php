@@ -32,4 +32,5 @@ class WorkingDaysCounterService
         // Check if the given date is a working day (Monday to Friday)
         return $date->format('N') < 6;
     }
+
 }

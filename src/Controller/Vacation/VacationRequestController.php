@@ -5,11 +5,10 @@ namespace App\Controller\Vacation;
 use App\Controller\Notification\EmailNotificationController;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
-use App\Repository\Settings\NotificationRepository;
 use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
-use App\Service\EmailService;
 use App\Service\Vacation\CounterVacationDays;
+use DateTime;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -19,28 +18,28 @@ class VacationRequestController
     private Vacation $vacation;
 
     public function __construct(
-        private VacationRepository $vacationRepository,
-        private LimitsVacationController $limitsVacationController,
-        private StatusVacationController $statusVacationController,
-        private CounterVacationDays $counterVacationDays,
-        private EmailNotificationController $emailNotificationController,
-        private Security $security,
-        private UserRepository $userRepository
+        private readonly VacationRepository $vacationRepository,
+        private readonly LimitsVacationController $limitsVacationController,
+        private readonly StatusVacationController $statusVacationController,
+        private readonly CounterVacationDays $counterVacationDays,
+        private readonly EmailNotificationController $emailNotificationController,
+        private readonly Security $security,
+        private readonly UserRepository $userRepository
     )
     {
     }
 
-    private function setVacation(Vacation $vacation)
+    private function setVacation(Vacation $vacation):void
     {
         $this->vacation = $vacation;
     }
 
-    private function setPreaviusVacation(Vacation $vacation)
+    private function setPreaviusVacation(Vacation $vacation):void
     {
         $this->vacation = $vacation;
     }
 
-    public function onVacationRequestPost(Vacation $vacation)
+    public function onVacationRequestPost(Vacation $vacation):void
     {
         $this -> setVacation($vacation);
         $this -> checkDateAvailability();
@@ -48,18 +47,16 @@ class VacationRequestController
         $this -> checkVacationDaysLimit();
         $this -> checkReplacement();
         $this -> vacation -> setCreatedBy($this->userRepository->find($this->security->getUser()->getId()));
-        $this -> vacation -> setCreatedAt(new \DateTime());
+        $this -> vacation -> setCreatedAt(new DateTime());
         $this -> emailNotificationController    ->  OnVacationAdd($vacation);
     }
 
-    public function onVacationUpdate(Vacation $vacation, Vacation $previousVacation)
+    public function onVacationUpdate(Vacation $vacation, Vacation $previousVacation):void
     {
         $this   ->setVacation($vacation);
         $this   ->setPreaviusVacation($previousVacation);
         $this   ->checkVacationDaysLimit();
         $this   ->checkReplacement();
-
-
     }
 
     public function checkReplacement(): void
@@ -96,7 +93,7 @@ class VacationRequestController
 
         $limitDays = $this->getVacationLimits()->getDaysLimit();
 
-        $spendDays = $this->counterVacationDays->getVacationDaysSpend($this->vacation->getEmployee(),$this->vacation->getType(),$this->vacation->getStatus());
+        $spendDays = $this->counterVacationDays->countVacationSpendDays($this->vacation->getEmployee(),$this->vacation->getType());
 
         if ($limitDays == 0) {
             return;

@@ -194,7 +194,7 @@ class VacationRequestResourceTest extends KernelTestCase
             ->actingAs($user)
             ->post('/api/vacations',[
                 'json'=>[
-                    'employee'=>'api/employees/'.$employee->getId(),
+                    'employee'=>'api/employees/'.$employee2->getId(),
                     'type'=> 'api/vacation_types/'.$vacationType->getId(),
                     'dateFrom'=> '2023-09-15',
                     'dateTo'=>'2023-09-21'
@@ -203,17 +203,15 @@ class VacationRequestResourceTest extends KernelTestCase
             ->assertStatus(201);
 
         $this->browser()
-            ->actingAs($user)
+            ->actingAs($user2)
             ->put('/api/vacations/1',[
                 'json'=>[
-                    'employee'=>'api/employees/'.$employee2->getId(),
-                    'type'=> 'api/vacation_types/'.$vacationType->getId(),
                     'dateFrom'=> '2023-09-14',
                     'dateTo'=>'2023-09-22',
                     'replacement' => 'api/employees/'.$employee->getId(),
                 ]
             ])
-            ->dd();
+            ->assertStatus(200);
 
     }
 
