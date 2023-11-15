@@ -20,29 +20,28 @@ class HomeController extends AbstractController
 
     #[Route('/api/vacations/week/current')]
     #[IsGranted('ROLE_USER')]
-    public function getEmployeeOnVacation()
+    public function getEmployeeOnVacation() : JsonResponse
     {
         $today = date('Y-m-d');
 
-        $monday = date('Y-m-d', strtotime('this Monday', strtotime($today)));
+        $monday = date('Y-m-d', strtotime('last Monday', strtotime($today)));
         $friday = date('Y-m-d', strtotime('this Friday', strtotime($today)));
 
         $dbResult = $this->vacationRepository->findEmployeeOnVacation($monday, $friday);
 
-        foreach ($dbResult as $vacation){
+        foreach ($dbResult as $vacation) {
             $result[] = [
-                'vacation_id'=>$vacation ->getId(),
-                'employee_id'=>$vacation ->getEmployee()->getId(),
-                'employee_name' => $vacation -> getEmployee()->getName()??"",
-                'employee_surname' => $vacation -> getEmployee()->getSurname()??"",
-                'department' => $vacation ->getEmployee() -> getDepartment() ?->getName() ??"",
-                'dateFrom' => $vacation -> getDateFrom() ->format('Y-m-d'),
-                'dateTo' => $vacation -> getDateTo()->format('Y-m-d'),
-                'replacement_name' => $vacation ?-> getReplacement() ?-> getName() ??"",
-                'replacement_surname' => $vacation ?-> getReplacement() ?-> getSurname()??"",
+                'vacation_id' => $vacation->getId(),
+                'employee_id' => $vacation->getEmployee()->getId(),
+                'employee_name' => $vacation->getEmployee()->getName() ?? "",
+                'employee_surname' => $vacation->getEmployee()->getSurname() ?? "",
+                'department' => $vacation->getEmployee()->getDepartment()?->getName() ?? "",
+                'dateFrom' => $vacation->getDateFrom()->format('Y-m-d'),
+                'dateTo' => $vacation->getDateTo()->format('Y-m-d'),
+                'replacement_name' => $vacation?->getReplacement()?->getName() ?? "",
+                'replacement_surname' => $vacation?->getReplacement()?->getSurname() ?? "",
             ];
         }
-
 
         return new JsonResponse($result ?? []);
     }
