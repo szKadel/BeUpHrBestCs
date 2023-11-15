@@ -41,6 +41,7 @@ class HomeController extends AbstractController
                 'replacement_name' => $vacation?->getReplacement()?->getName() ?? "",
                 'replacement_surname' => $vacation?->getReplacement()?->getSurname() ?? "",
             ];
+
         }
 
         return new JsonResponse($result ?? []);
