@@ -67,7 +67,7 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
 
         foreach ($user->getEmployee()->getSubordinates() as $subordinate){
             $key = "subordinate".$subordinate->getId();
-            $queryBuilder->orWhere('u.employee = :'.$key);
+            $queryBuilder->orWhere('%s.employee = :'.$key);
             $queryBuilder->setParameter($key, $subordinate);
         }
     }
