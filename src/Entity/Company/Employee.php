@@ -91,12 +91,19 @@ class Employee
     #[Groups(['user:read','user:write','employeeExtended:read'])]
     private Collection $employeeExtendedAccesses;
 
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subordinates')]
+    private ?self $supervisor = null;
+
+    #[ORM\OneToMany(mappedBy: 'supervisor', targetEntity: self::class)]
+    private Collection $subordinates;
+
 
     public function __construct()
     {
         $this->vacationLimits = new ArrayCollection();
         $this->vacations = new ArrayCollection();
         $this->employeeExtendedAccesses = new ArrayCollection();
+        $this->subordinates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -287,6 +294,48 @@ class Employee
             // set the owning side to null (unless already changed)
             if ($employeeExtendedAccess->getEmployee() === $this) {
                 $employeeExtendedAccess->setEmployee(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSupervisor(): ?self
+    {
+        return $this->supervisor;
+    }
+
+    public function setSupervisor(?self $supervisor): static
+    {
+        $this->supervisor = $supervisor;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getSubordinates(): Collection
+    {
+        return $this->subordinates;
+    }
+
+    public function addSubordinate(self $subordinate): static
+    {
+        if (!$this->subordinates->contains($subordinate)) {
+            $this->subordinates->add($subordinate);
+            $subordinate->setSupervisor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubordinate(self $subordinate): static
+    {
+        if ($this->subordinates->removeElement($subordinate)) {
+            // set the owning side to null (unless already changed)
+            if ($subordinate->getSupervisor() === $this) {
+                $subordinate->setSupervisor(null);
             }
         }
 

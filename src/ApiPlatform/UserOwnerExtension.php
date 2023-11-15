@@ -55,7 +55,6 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
-
         $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
         $queryBuilder->andWhere('u.department = :department');
         $queryBuilder->setParameter('department', $user->getEmployee()->getDepartment());
@@ -66,6 +65,10 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
             $queryBuilder->setParameter($key, $employeeExtendedAccesses->getDepartment());
         }
 
-
+        foreach ($user->getEmployee()->getSubordinates() as $subordinate){
+            $key = "subordinate".$subordinate->getId();
+            $queryBuilder->orWhere('u.employee = :'.$key);
+            $queryBuilder->setParameter($key, $subordinate);
+        }
     }
 }
