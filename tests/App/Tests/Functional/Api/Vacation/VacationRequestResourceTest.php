@@ -261,10 +261,8 @@ class VacationRequestResourceTest extends KernelTestCase
         // Wnioski jako mod
         $this->browser()
             ->actingAs($mod)
-            ->get('/api/vacations',[
-            ])
-            ->dump();
-
+            ->get('/api/vacations',[])
+            ->assertStatus(200);
     }
 
 }
