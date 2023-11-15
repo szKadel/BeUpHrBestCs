@@ -92,6 +92,7 @@ class Employee
     private Collection $employeeExtendedAccesses;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subordinates')]
+    #[Groups(['employee:read','employee:write'])]
     private ?self $supervisor = null;
 
     #[ORM\OneToMany(mappedBy: 'supervisor', targetEntity: self::class)]
