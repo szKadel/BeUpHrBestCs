@@ -73,7 +73,6 @@ class VacationRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('v')
             ->leftJoin('v.employee', "e")
-            ->andWhere('e.department = :department')
             ->andWhere('(v.dateTo BETWEEN :dateFrom AND :dateTo OR
              v.dateFrom BETWEEN :dateFrom AND :dateTo OR 
              :dateFrom BETWEEN v.dateFrom AND v.dateTo OR 
@@ -85,7 +84,6 @@ class VacationRepository extends ServiceEntityRepository
               v.dateFrom = :dateTo)')
             ->andWhere('v.status = :status')
             ->setParameter('status', $statusAccepted)
-            ->setParameter('department', $this->security->getUser()->getEmployee()->getDepartment())
             ->setParameter('dateFrom', $dateFrom)
             ->setParameter('dateTo', $dateTo)
             ->getQuery()
