@@ -6,6 +6,10 @@ use ApiPlatform\Api\IriConverterInterface;
 use App\Controller\Authorisation\ApiTokenController;
 use App\Entity\ApiToken;
 use App\Entity\User;
+use App\Entity\Vacation\VacationLimits;
+use App\Repository\EmployeeVacationLimitRepository;
+use App\Repository\VacationTypesRepository;
+use App\Service\Vacation\CounterVacationDays;
 use Doctrine\ORM\EntityManagerInterface;
 use MongoDB\Driver\Exception\AuthenticationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +24,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class SecurityController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager, private CounterVacationDays $counterVacationDays)
     {
 
     }
@@ -69,7 +73,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/api/getCurrentUser/', name: 'app_check_user', methods: ['GET'])]
-    public function getCurrentUser(IriConverterInterface $iriConverter, #[CurrentUser] User $user ):Response
+    public function getCurrentUser(IriConverterInterface $iriConverter, VacationTypesRepository $typesRepository, EmployeeVacationLimitRepository $employeeVacationLimitRepository, #[CurrentUser] User $user):Response
     {
         if(empty($user->getId()) || $user === null)
         {
@@ -80,6 +84,12 @@ class SecurityController extends AbstractController
 
         if(!empty($user->getEmployee())) {
 
+            $vacationType = $typesRepository->findBy(["name"=>"Urlop Wypoczynkowy"])[0] ?? 0;
+            $vacationLimit = $employeeVacationLimitRepository->findBy(["Employee"=>$user->getEmployee(),"vacationType"=>$vacationType])[0]?? 0;
+            $spendDays = $vacationLimit instanceof VacationLimits ? $this->counterVacationDays->getVacationDaysSpend($user->getEmployee(),$vacationType) : 0;
+            $limit = $vacationLimit instanceof VacationLimits ? $vacationLimit->getDaysLimit() : 0;
+            $leftVacationDays = $limit - $spendDays;
+
             $employee = [
                     '@id' => $iriConverter->getIriFromResource($user->getEmployee()) ?? "",
                     'id' => $user->getEmployee()?->getId(),
@@ -89,7 +99,10 @@ class SecurityController extends AbstractController
                         '@id' => $iriConverter->getIriFromResource($user->getEmployee()->getDepartment()) ?? "",
                         'id' => $user->getEmployee()->getDepartment()->getId() ?? "",
                         'name' => $user->getEmployee()->getDepartment()->getName() ?? ""
-                    ]
+                    ],
+                    'spendVacationsDays' => $spendDays ?? 0,
+                    'vacationDaysLeft' => $leftVacationDays ?? 0,
+                    'vacationDaysLimit' => $limit
                 ] ?? null;
 
             $extendedAccess = $user->getEmployee()->getEmployeeExtendedAccesses();
