@@ -26,7 +26,7 @@ class CounterVacationDays
     {
 
         $holidayType = $this->typesRepository->findBy(['name'=>'Urlop Wypoczynkowy'])[0];
-        $holidayOnRequestType = $this->typesRepository->findBy(['name'=>'Na żądanie'])[0];
+        $holidayOnRequestType = $this->typesRepository->findBy(['name'=>'Urlop na żądanie'])[0];
 
         $spendDaysOnRequestType = $this->countVacationSpendDays($employee, $holidayOnRequestType);
         $spendDaysStandardVacation = $this->countVacationSpendDays($employee, $holidayType);

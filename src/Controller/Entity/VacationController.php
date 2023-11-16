@@ -27,26 +27,16 @@ class VacationController extends AbstractController
     public function getVacationSum(IriConverterInterface $iriConverter, VacationTypesRepository $typesRepository, EmployeeVacationLimitRepository $employeeVacationLimitRepository, #[CurrentUser] User $user):Response
     {
         $vacationType = $typesRepository->findBy(["name"=>"Urlop Wypoczynkowy"])[0] ?? 0;
-        $vacationTypeOnDemend = $typesRepository->findBy(["name"=>"Na żądanie"])[0] ?? 0;
-        if($vacationType instanceof VacationTypes) {
-            $vacationLimit = $employeeVacationLimitRepository->findBy(
-                    ["Employee" => $user->getEmployee(), "vacationType" => $vacationType]
-                )[0] ?? 0;
-            $spendDays = $this->counterVacationDays->countVacationSpendDays($user->getEmployee(), $vacationType);
-            if($vacationTypeOnDemend instanceof VacationTypes) {
-                $spendDays += $this->counterVacationDays->countVacationSpendDays(
-                    $user->getEmployee(),
-                    $vacationTypeOnDemend
-                )?? 0;
-            }
 
-            $limit = $vacationLimit instanceof VacationLimits ? $vacationLimit->getDaysLimit() : 0;
-            $leftVacationDays = $limit - $spendDays;
-        }else{
-            $spendDays = 0;
-            $leftVacationDays = 0;
-            $limit = 0;
-        }
+        $vacationLimit = $employeeVacationLimitRepository->findBy(
+                ["Employee" => $user->getEmployee(), "vacationType" => $vacationType]
+            )[0] ?? 0;
+        $spendDays = $this->counterVacationDays->countHolidaysForEmployee($user->getEmployee());
+
+
+        $limit = $vacationLimit instanceof VacationLimits ? $vacationLimit->getDaysLimit() : 0;
+        $leftVacationDays = $limit - $spendDays;
+
 
         return new JsonResponse([
             'spendVacationsDays' => $spendDays ?? 0,
