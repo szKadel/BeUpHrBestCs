@@ -97,7 +97,7 @@ class AuthenticationTest extends KernelTestCase
         $this->browser()
             ->actingAs($user)
             ->get('/api/getCurrentUser/vacations',[]
-            )->dd();
+            )->assertStatus(200);
 
         //check authentication
         $this->browser()
