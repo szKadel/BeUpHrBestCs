@@ -67,7 +67,7 @@ class VacationStateProcessor implements ProcessorInterface
 
                         if(!$this -> security -> isGranted('ROLE_ADMIN')){
                             if($user -> getEmployee() ->getId() == $data->getEmployee()->getId()) {
-                                throw new BadRequestException('Brak Uprawnień');
+                                throw new BadRequestException('Brak Uprawnień do akceptacji własnego wniosku');
                             }
                         }
 
