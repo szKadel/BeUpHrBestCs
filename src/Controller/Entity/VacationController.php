@@ -28,20 +28,22 @@ class VacationController extends AbstractController
     {
         $vacationType = $typesRepository->findBy(["name"=>"Urlop Wypoczynkowy"])[0] ?? 0;
 
-        $vacationLimit = $employeeVacationLimitRepository->findBy(
-                ["Employee" => $user->getEmployee(), "vacationType" => $vacationType]
-            )[0] ?? 0;
-        $spendDays = $this->counterVacationDays->countHolidaysForEmployee($user->getEmployee());
+        if($vacationType instanceof VacationTypes) {
+            $vacationLimit = $employeeVacationLimitRepository->findBy(
+                    ["Employee" => $user->getEmployee(), "vacationType" => $vacationType]
+                )[0] ?? 0;
+            $spendDays = $this->counterVacationDays->countHolidaysForEmployee($user->getEmployee());
 
 
-        $limit = $vacationLimit instanceof VacationLimits ? $vacationLimit->getDaysLimit() : 0;
-        $leftVacationDays = $limit - $spendDays;
+            $limit = $vacationLimit instanceof VacationLimits ? $vacationLimit->getDaysLimit() : 0;
+            $leftVacationDays = $limit - $spendDays;
+        }
 
 
         return new JsonResponse([
             'spendVacationsDays' => $spendDays ?? 0,
             'vacationDaysLeft' => $leftVacationDays ?? 0,
-            'vacationDaysLimit' => $limit
+            'vacationDaysLimit' => $limit ?? 0
         ]);
     }
 

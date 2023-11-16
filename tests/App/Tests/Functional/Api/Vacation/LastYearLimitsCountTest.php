@@ -24,7 +24,7 @@ class LastYearLimitsCountTest extends KernelTestCase
         VacationStatusFactory::createOne(['name'=>'Oczekujący']);
         VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
 
-        $vacationType2 =    VacationTypesFactory::createOne(['name'=>"Na żądanie"]);
+        $vacationType2 =    VacationTypesFactory::createOne(['name'=>"Urlop na żądanie"]);
 
 
 
@@ -63,10 +63,6 @@ class LastYearLimitsCountTest extends KernelTestCase
             ->get("/Vacations/YearSummation")
             ->assertStatus(200);
 
-        $this->browser()
-            ->actingAs($user)
-            ->get("/api/vacation_limits")
-            ->dump();
     }
 
 }
