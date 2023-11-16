@@ -32,10 +32,6 @@ class EmailNotificationController
             return;
         }
 
-        if($this->notification ->isNotificateAdminOnAcceptVacation()) {
-            $this->emailService -> sendNotificationEmailToAllAdmin($vacation);
-        }
-
         if($this->notification ->isNotificateDepartmentModOnCreatedVacation())
         {
             $this->emailService->sendNotificationToModofDepartment($vacation);

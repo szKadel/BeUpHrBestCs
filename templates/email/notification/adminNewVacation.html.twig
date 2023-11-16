@@ -21,7 +21,7 @@
         <b style='font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol; font-size: 20px'>Drogi Administratorze!</b><br />
         <br />
         <span style='font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;color: #4b4d4c; font-size: 15px;'>
-            Użytkownik <b>{{vacation.getEmployee().getName() ??"" }} {{vacation.getEmployee().getSurname() ??"" }}</b> utworzył wniosek, który oczekuje na Twoją akceptację.
+           Wniosek użytkownika <b>{{vacation.getEmployee().getName() ??"" }} {{vacation.getEmployee().getSurname() ??"" }}</b> zmienił status na: {{vacation.getStatus().getName() ?? ""}}
           </span><br/>
         <br />
         <b style='font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol; font-size: 20px'>Szczegóły:</b><br />

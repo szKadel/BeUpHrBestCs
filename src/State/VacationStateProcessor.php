@@ -81,6 +81,11 @@ class VacationStateProcessor implements ProcessorInterface
                             throw new BadRequestException('Brak Uprawnień');
                         }
                     }
+
+                    if($this->notificationRepository ->getNotificationsSettings()?->isNotificateAdminOnAcceptVacation()) {
+                        $this->emailService -> sendNotificationEmailToAllAdmin($data);
+                    }
+
                 }
 
                 if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
