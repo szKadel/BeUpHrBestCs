@@ -84,12 +84,6 @@ class SecurityController extends AbstractController
 
         if(!empty($user->getEmployee())) {
 
-            $vacationType = $typesRepository->findBy(["name"=>"Urlop Wypoczynkowy"])[0] ?? 0;
-            $vacationLimit = $employeeVacationLimitRepository->findBy(["Employee"=>$user->getEmployee(),"vacationType"=>$vacationType])[0]?? 0;
-            $spendDays = $this->counterVacationDays->countVacationSpendDays($user->getEmployee(),$vacationType);
-            $limit = $vacationLimit instanceof VacationLimits ? $vacationLimit->getDaysLimit() : 0;
-            $leftVacationDays = $limit - $spendDays;
-
             $employee = [
                     '@id' => $iriConverter->getIriFromResource($user->getEmployee()) ?? "",
                     'id' => $user->getEmployee()?->getId(),
@@ -100,9 +94,6 @@ class SecurityController extends AbstractController
                         'id' => $user->getEmployee()->getDepartment()->getId() ?? "",
                         'name' => $user->getEmployee()->getDepartment()->getName() ?? ""
                     ],
-                    'spendVacationsDays' => $spendDays ?? 0,
-                    'vacationDaysLeft' => $leftVacationDays ?? 0,
-                    'vacationDaysLimit' => $limit
                 ] ?? null;
 
             $extendedAccess = $user->getEmployee()->getEmployeeExtendedAccesses();
