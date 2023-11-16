@@ -27,7 +27,6 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
     public function applyToItem(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, array $identifiers, Operation $operation = null, array $context = []): void
     {
         $this->addWhere($queryBuilder, $resourceClass);
-        $this->groupModerator($queryBuilder, $resourceClass);
     }
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
