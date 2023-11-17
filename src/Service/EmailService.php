@@ -83,10 +83,14 @@ class EmailService
             }
         }
         if(!empty($vacation->getEmployee()->getSupervisor() )) {
-            $this->sendEmail(
-                "BestCs - powiadomienie",
-                $vacation->getEmployee()->getSupervisor()->getUser()?->getEmail(),
-                "modNewVacation.html.twig",$vacation);
+            if(!empty($vacation->getEmployee()->getSupervisor()->getUser()?->getEmail())) {
+                $this->sendEmail(
+                    "BestCs - powiadomienie",
+                    $vacation->getEmployee()->getSupervisor()->getUser()?->getEmail(),
+                    "modNewVacation.html.twig",
+                    $vacation
+                );
+            }
         }
 
         $extMods = $vacation->getEmployee()->getDepartment()->getEmployeeExtendedAccesses();
