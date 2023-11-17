@@ -71,17 +71,21 @@ class EmailService
     {
         $mods = $this->userRepository->getModerators($vacation->getEmployee()->getDepartment());
         foreach ($mods as $mod){
-            if(!empty($mod?->getEmail())) {
-                $this->sendEmail(
-                    "BestCs - powiadomienie",
-                    $mod->getEmail(),
-                    "modNewVacation.html.twig",$vacation);
+            if($vacation->getEmployee()->getUser()->getId() != $mod->getId()) {
+                if (!empty($mod?->getEmail())) {
+                    $this->sendEmail(
+                        "BestCs - powiadomienie",
+                        $mod->getEmail(),
+                        "modNewVacation.html.twig",
+                        $vacation
+                    );
+                }
             }
         }
         if(!empty($vacation->getEmployee()->getSupervisor() )) {
             $this->sendEmail(
                 "BestCs - powiadomienie",
-                $vacation->getEmployee()->getSupervisor()?->getUser()?->getEmail(),
+                $vacation->getEmployee()->getSupervisor()->getUser()?->getEmail(),
                 "modNewVacation.html.twig",$vacation);
         }
 
