@@ -34,8 +34,7 @@ class VacationController extends AbstractController
                 )[0] ?? 0;
             $spendDays = $this->counterVacationDays->countHolidaysForEmployee($user->getEmployee());
 
-
-            $limit = $vacationLimit instanceof VacationLimits ? $vacationLimit->getDaysLimit() : 0;
+            $limit = $vacationLimit instanceof VacationLimits ? $vacationLimit->getDaysLimit() + $vacationLimit->getUnusedDaysFromPreviousYear() : 0;
             $leftVacationDays = $limit - $spendDays;
         }
 
