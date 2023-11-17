@@ -79,21 +79,28 @@ class EmployeeController extends AbstractController
     }
     #[IsGranted('ROLE_ADMIN')]
     #[Route('api/user/custom/{id}', methods: ['DELETE'])]
-    public function deleteUser($id)
+    public function deleteUser(int $id, ApiTokenRepository $apiTokenRepository)
     {
 
         $user = $this->userRepository->find($id);
 
         if(!$user instanceof User)
         {
-            throw new BadRequestException("Nie znaleziono elementu.",404);
+            throw new BadRequestException("Nie znaleziono elementu.",400);
         }
 
-        $apiTokens =  $this->apiTokenRepository->findBy(['ownedBy' => $user]);
+        if($user->getEmployee()){
+            throw new BadRequestException("Nie można usunać użytkownika z przypisanym pracownikiem.",400);
+        }
 
-        foreach ($apiTokens as $apiToken)
-        {
-            $this->delete($apiToken);
+        $apiTokens = $apiTokenRepository->findBy(["ownedBy"=>$id]);
+
+        if(count($apiTokens) > 1) {
+            foreach ($apiTokens as $apiToken) {
+                $this->delete($apiToken);
+            }
+        }elseif (count($apiTokens) == 1){
+            $this->delete($apiTokens[0]);
         }
 
         if(!empty($user->getEmployee())){
@@ -119,6 +126,7 @@ class EmployeeController extends AbstractController
 
         $this->entityManager->remove($employee);
         $this->entityManager->flush();
+
     }
 
     #[IsGranted('ROLE_ADMIN')]
