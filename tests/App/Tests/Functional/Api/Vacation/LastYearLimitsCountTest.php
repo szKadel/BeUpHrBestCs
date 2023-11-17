@@ -25,9 +25,6 @@ class LastYearLimitsCountTest extends KernelTestCase
         VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
 
         $vacationType2 =    VacationTypesFactory::createOne(['name'=>"Urlop na żądanie"]);
-
-
-
         $employee = EmployeeFactory::createOne();
         $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_ADMIN']]);
 
