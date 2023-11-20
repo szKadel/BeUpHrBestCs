@@ -101,7 +101,6 @@ class EmailService
                     "modNewVacation.html.twig",$vacation);
             }
         }
-
     }
 
     public function sendNotificationToOwnerOnChangeStatus(Vacation $vacation):void

@@ -98,6 +98,10 @@ class Employee
     #[ORM\OneToMany(mappedBy: 'supervisor', targetEntity: self::class)]
     private Collection $subordinates;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['user:read','user:write','employee:read','employee:write'])]
+    private ?bool $unActive = null;
+
 
     public function __construct()
     {
@@ -339,6 +343,18 @@ class Employee
                 $subordinate->setSupervisor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->unActive;
+    }
+
+    public function setUnActive(?bool $unActive): static
+    {
+        $this->unActive = $unActive;
 
         return $this;
     }
