@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model;
 use App\Controller\CreateMediaObjectAction;
+use App\Controller\Entity\CreatedVacationFile;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -18,15 +19,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
 #[ORM\Entity]
 #[ApiResource(
-    normalizationContext: ['groups' => ['media_object:read']],
     types: ['https://schema.org/MediaObject'],
     operations: [
         new Get(),
         new GetCollection(),
         new Post(
-            controller: CreateMediaObjectAction::class,
-            deserialize: false,
-            validationContext: ['groups' => ['Default', 'media_object_create']],
+            controller: CreatedVacationFile::class,
             openapi: new Model\Operation(
                 requestBody: new Model\RequestBody(
                     content: new \ArrayObject([
@@ -43,9 +41,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                         ]
                     ])
                 )
-            )
+            ),
+            validationContext: ['groups' => ['Default', 'media_object_create']],
+            deserialize: false
         )
-    ]
+    ],
+    normalizationContext: ['groups' => ['media_object:read']]
 )]
 class VacationFile
 {
