@@ -18,7 +18,6 @@ class EmailService
         private UserRepository $userRepository,
         private Environment $twig)
     {
-
     }
 
     /**
@@ -71,7 +70,7 @@ class EmailService
     {
         $mods = $this->userRepository->getModerators($vacation->getEmployee()->getDepartment());
         foreach ($mods as $mod){
-            if($vacation->getEmployee()->getUser()->getId() != $mod->getId()) {
+            if($vacation->getEmployee()->getUser()?->getId() != $mod->getId()) {
                 if (!empty($mod?->getEmail())) {
                     $this->sendEmail(
                         "BestCs - powiadomienie",
