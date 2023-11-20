@@ -347,7 +347,7 @@ class Employee
         return $this;
     }
 
-    public function isActive(): ?bool
+    public function getUnActive(): ?bool
     {
         return $this->unActive;
     }

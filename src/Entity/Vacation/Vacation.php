@@ -6,6 +6,7 @@ use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -125,6 +126,11 @@ class Vacation
     #[ORM\ManyToOne]
     #[Groups(['vacationRequest:read'])]
     private ?User $AnnulledBy = null;
+
+    #[ORM\ManyToOne(targetEntity: VacationFile::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[ApiProperty(types: ['https://schema.org/file'])]
+    public ?VacationFile $file = null;
 
     public function __construct()
     {
