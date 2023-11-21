@@ -85,7 +85,7 @@ class Employee
     private ?int $bitrixId = null;
 
     #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
-    #[Groups(['user:read','user:write','employee:read','employee:write'])]
+    #[Groups(['user:read','user:write','employee:read','employee:write','vacationRequest:read'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'employees')]
