@@ -3,6 +3,7 @@
 namespace App\Entity\Company;
 
 use ApiPlatform\Doctrine\Odm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
@@ -32,7 +33,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7
 )]
-
+#[ApiFilter(OrderFilter::class, properties: ['unActive','name','surname','department','company'])]
+#[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,properties: ['employee.department'=>'exact'])]
 class Employee
 {
 
@@ -99,6 +101,7 @@ class Employee
     private Collection $subordinates;
 
     #[ORM\Column(nullable: true)]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
     #[Groups(['user:read','user:write','employee:read','employee:write'])]
     private ?bool $unActive = null;
 
