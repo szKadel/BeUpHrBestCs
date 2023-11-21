@@ -99,7 +99,6 @@ class Employee
     #[ORM\OneToMany(mappedBy: 'supervisor', targetEntity: self::class)]
     private Collection $subordinates;
 
-    #[ORM\Column(nullable: true)]
     #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
     #[Groups(['employee:read','employee:write','vacationRequest:read'])]
     private ?bool $unActive = null;
