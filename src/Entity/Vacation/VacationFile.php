@@ -8,7 +8,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model;
-use App\Controller\CreateMediaObjectAction;
+
 use App\Controller\Entity\CreatedVacationFile;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -21,8 +21,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ApiResource(
     types: ['https://schema.org/MediaObject'],
     operations: [
-        new Get(),
-        new GetCollection(),
+        new Get(normalizationContext: ['groups' => ['vacation_file:read']]),
+        new GetCollection(normalizationContext: ['groups' => ['vacation_file:read']]),
         new Post(
             controller: CreatedVacationFile::class,
             openapi: new Model\Operation(
@@ -42,11 +42,11 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                     ])
                 )
             ),
-            validationContext: ['groups' => ['Default', 'media_object_create']],
+            validationContext: ['groups' => ['Default', 'vacation_file:create']],
             deserialize: false
         )
     ],
-    normalizationContext: ['groups' => ['media_object:read']]
+    normalizationContext: ['groups' => ['vacation_file:read']]
 )]
 class VacationFile
 {
@@ -54,18 +54,42 @@ class VacationFile
     private ?int $id = null;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['media_object:read'])]
+    #[Groups(['vacation_file:read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]
-    #[Assert\NotNull(groups: ['media_object_create'])]
+    #[Assert\NotNull(groups: ['vacation_file:create'])]
     public ?File $file = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['vacation_file:read'])]
     public ?string $filePath = null;
+
+    #[ORM\ManyToOne(inversedBy: 'vacationFiles')]
+    private ?Vacation $vacation = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getContentUrl(): ?string
+    {
+        return $this->contentUrl;
+    }
+
+    public function getVacation(): ?Vacation
+    {
+        return $this->vacation;
+    }
+
+    public function setVacation(?Vacation $vacation): static
+    {
+        $this->vacation = $vacation;
+
+        return $this;
     }
 }

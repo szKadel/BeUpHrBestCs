@@ -19,6 +19,8 @@ use App\Repository\VacationRepository;
 use App\Service\WorkingDaysCounterService;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
@@ -127,14 +129,13 @@ class Vacation
     #[Groups(['vacationRequest:read'])]
     private ?User $AnnulledBy = null;
 
-    #[ORM\ManyToOne(targetEntity: VacationFile::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    #[ApiProperty(types: ['https://schema.org/file'])]
-    public ?VacationFile $file = null;
+    #[ORM\OneToMany(mappedBy: 'vacation', targetEntity: VacationFile::class)]
+    private Collection $vacationFiles;
 
     public function __construct()
     {
         $this->setCreatedAt(new DateTime());
+        $this->vacationFiles = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -350,6 +351,36 @@ class Vacation
     public function setAnnulledBy(?User $AnnulledBy): static
     {
         $this->AnnulledBy = $AnnulledBy;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, VacationFile>
+     */
+    public function getVacationFiles(): Collection
+    {
+        return $this->vacationFiles;
+    }
+
+    public function addVacationFile(VacationFile $vacationFile): static
+    {
+        if (!$this->vacationFiles->contains($vacationFile)) {
+            $this->vacationFiles->add($vacationFile);
+            $vacationFile->setVacation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVacationFile(VacationFile $vacationFile): static
+    {
+        if ($this->vacationFiles->removeElement($vacationFile)) {
+            // set the owning side to null (unless already changed)
+            if ($vacationFile->getVacation() === $this) {
+                $vacationFile->setVacation(null);
+            }
+        }
 
         return $this;
     }
