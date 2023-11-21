@@ -77,7 +77,7 @@ class Employee
     private ?string $email = null;
 
     #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'partial')]
-    #[Groups(['vacationRequest:read','employee:read','employee:write'])]
+    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write','user:read','departmentOne:read'])]
     private ?bool $unActive = null;
 
 
