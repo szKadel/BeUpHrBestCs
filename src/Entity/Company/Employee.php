@@ -352,11 +352,6 @@ class Employee
         return $this->unActive;
     }
 
-    public function isUnActive(): ?bool
-    {
-        return $this->unActive;
-    }
-
     public function setUnActive(?bool $unActive): static
     {
         $this->unActive = $unActive;
