@@ -34,7 +34,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationItemsPerPage: 7
 )]
 #[ApiFilter(OrderFilter::class, properties: ['unActive','name','surname','department','company'])]
-#[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,properties: ['employee.department'=>'exact'])]
 class Employee
 {
 
