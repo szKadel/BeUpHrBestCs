@@ -166,9 +166,13 @@ class SecurityController extends AbstractController
         }else{
             $email = $requestData['email'];
         }
-        $user = $userRepository->findOneBy(["email"=>$email]);
-        if (empty($user)) {
+
+        $user = $userRepository->findBy(['email'=>$email]);
+
+        if (empty($user[0])) {
             throw new BadRequestException("User dont exist");
+        }else{
+            $user = $user[0];
         }
 
             $newPassword =  RandomPasswordGenerator::generatePassword();

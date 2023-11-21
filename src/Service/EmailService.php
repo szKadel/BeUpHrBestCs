@@ -44,7 +44,7 @@ class EmailService
 
     public function sendResetPassword(string $subject, string $to, string $templateName, User $user, string $password): void
     {
-        $body = $this->twig->render("email/notification/".$templateName, ['vacation'=>$user, 'password'=>$password]);
+        $body = $this->twig->render("email/changePassword/".$templateName, ['vacation'=>$user, 'password'=>$password]);
 
         $email = (new Email())
             ->from('beuphr@beupsoft.pl')
