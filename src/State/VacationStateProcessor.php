@@ -30,7 +30,6 @@ class VacationStateProcessor implements ProcessorInterface
         private VacationRequestController $vacationRequestController,
         private ProcessorInterface $innerProcessor,
         private Security $security,
-        private VacationRepository $vacationRepository,
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmailService $emailService,
         private UserRepository $userRepository,
@@ -53,6 +52,11 @@ class VacationStateProcessor implements ProcessorInterface
                 $this->vacationRequestController->onVacationRequestPost($data);
 
             } elseif ($operation instanceof Put) {
+                if($data->getEmployee()->getUnActive()){
+                    throw new BadRequestException("Wniosek tego pracownika jest dezaktywowany.");
+                }
+
+
                 if ($data->getType()->getId() != 1 || $data->getType()->getId() != 11) {
                     $this->checkVacationLimits($data);
                 }

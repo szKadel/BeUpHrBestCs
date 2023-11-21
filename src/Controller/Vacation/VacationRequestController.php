@@ -41,6 +41,10 @@ class VacationRequestController
 
     public function onVacationRequestPost(Vacation $vacation):void
     {
+        if($vacation->getEmployee()->getUnActive()){
+            throw new BadRequestException("Wniosek tego pracownika jest dezaktywowany.");
+        }
+
         $this -> setVacation($vacation);
         $this -> checkDateAvailability();
         $this -> checkVacationStatus();

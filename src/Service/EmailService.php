@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Company\Employee;
+use App\Entity\User;
 use App\Entity\Vacation\Vacation;
 use App\Repository\UserRepository;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -25,9 +26,25 @@ class EmailService
      * @throws \Twig\Error\SyntaxError
      * @throws \Twig\Error\LoaderError
      */
-    public function sendEmail(string $subject, string $to, string $templateName, Vacation $vacationRequest): void
+    public function sendEmail(string $subject, string $to, string $templateName, ?Vacation $vacationRequest = null): void
     {
         $body = $this->twig->render("email/notification/".$templateName, ['vacation'=>$vacationRequest]);
+
+        $email = (new Email())
+            ->from('beuphr@beupsoft.pl')
+            ->to($to)
+            ->subject($subject)
+            ->html($body);
+        try {
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+
+        }
+    }
+
+    public function sendResetPassword(string $subject, string $to, string $templateName, User $user, string $password): void
+    {
+        $body = $this->twig->render("email/notification/".$templateName, ['vacation'=>$user, 'password'=>$password]);
 
         $email = (new Email())
             ->from('beuphr@beupsoft.pl')
@@ -49,7 +66,7 @@ class EmailService
                 $this->sendEmail(
                     "BestCs - powiadomienie",
                     $admin->getEmail(),
-                    "adminNewVacation.html.twig",
+                    "resetPassword.html.twig",
                     $vacation
                 );
             }
