@@ -66,7 +66,7 @@ class Employee
     private ?Department $department = null;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: VacationLimits::class, orphanRemoval: true)]
-    #[Groups(['employee:read','vacationLimit:read','vacationRequest:read'])]
+    #[Groups(['employee:read','vacationLimit:read'])]
     private Collection $vacationLimits;
 
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: Vacation::class)]
