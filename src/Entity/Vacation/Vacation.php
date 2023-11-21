@@ -6,7 +6,6 @@ use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -19,8 +18,6 @@ use App\Repository\VacationRepository;
 use App\Service\WorkingDaysCounterService;
 use DateTime;
 use DateTimeInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
@@ -129,13 +126,13 @@ class Vacation
     #[Groups(['vacationRequest:read'])]
     private ?User $AnnulledBy = null;
 
-    #[ORM\OneToMany(mappedBy: 'vacation', targetEntity: VacationFile::class)]
-    private Collection $vacationFiles;
+    #[ORM\ManyToOne(inversedBy: 'vacations')]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
+    private ?VacationFile $file = null;
 
     public function __construct()
     {
         $this->setCreatedAt(new DateTime());
-        $this->vacationFiles = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -251,7 +248,6 @@ class Vacation
     {
         $this->comment = $comment;
 
-
         return $this;
     }
 
@@ -355,32 +351,14 @@ class Vacation
         return $this;
     }
 
-    /**
-     * @return Collection<int, VacationFile>
-     */
-    public function getVacationFiles(): Collection
+    public function getFile(): ?VacationFile
     {
-        return $this->vacationFiles;
+        return $this->file;
     }
 
-    public function addVacationFile(VacationFile $vacationFile): static
+    public function setFile(?VacationFile $file): static
     {
-        if (!$this->vacationFiles->contains($vacationFile)) {
-            $this->vacationFiles->add($vacationFile);
-            $vacationFile->setVacation($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVacationFile(VacationFile $vacationFile): static
-    {
-        if ($this->vacationFiles->removeElement($vacationFile)) {
-            // set the owning side to null (unless already changed)
-            if ($vacationFile->getVacation() === $this) {
-                $vacationFile->setVacation(null);
-            }
-        }
+        $this->file = $file;
 
         return $this;
     }

@@ -2,11 +2,15 @@
 
 namespace Functional\Api\Vacation;
 
+use ApiPlatform\Api\IriConverterInterface;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\Vacation\VacationFile;
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\UserFactory;
+use App\Factory\Vacation\VacationFactory;
+use App\Factory\Vacation\VacationFileFactory;
+use App\Factory\Vacation\VacationLimitsFactory;
 use App\Factory\VacationTypesFactory;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Zenstruck\Browser\Test\HasBrowser;
@@ -19,10 +23,14 @@ class VacationFileObjectTest extends ApiTestCase
 
     public function testCreateAMediaObject(): void
     {
+        if (!file_exists('files/test.txt')) {
+            touch('files/test.txt');
+        }
+
         $file = new UploadedFile('files/test.txt', 'test.txt');
         $client = self::createClient();
 
-        $client->request('POST', '/api/vacation_files', [
+        $result = $client->request('POST', '/api/vacation_files', [
             'headers' => ['Content-Type' => 'multipart/form-data'],
             'extra' => [
                 'parameters' => [
@@ -32,22 +40,34 @@ class VacationFileObjectTest extends ApiTestCase
                     'file' => $file,
                 ],
             ]
-        ]);
+        ])->getContent();
 
-        $department2 = DepartmentFactory::createOne();
 
+
+
+        $department = DepartmentFactory::createMany(5);
         $employee = EmployeeFactory::createOne();
-        $employee3 = EmployeeFactory::createOne(['department'=>$department2]);
+        $employee2 = EmployeeFactory::createOne();
+        $employee3 = EmployeeFactory::createOne();
 
-        $user2 = UserFactory::createOne(['employee' => $employee3, 'roles'=>['ROLE_MOD']]);
+        $vacationType = VacationTypesFactory::createOne();
+        $vacationType2 = VacationTypesFactory::createOne();
 
-        $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_MOD']]);
+        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
+        VacationLimitsFactory::createOne(["employee"=>$employee2,'vacationType'=>$vacationType2, 'daysLimit'=>500]);
+
+        $user = UserFactory::createOne(['employee'=>$employee2,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
+        $user2 = UserFactory::createOne(['employee'=>$employee,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
+
+        $fileObject = VacationFileFactory::createOne();
+
+        VacationFactory::createOne(['employee' => $employee3, 'type'=>$vacationType,'replacement'=>$employee,'file'=>$fileObject]);
 
         $vacationType = VacationTypesFactory::createOne();
 
         $this->browser()
             ->actingAs($user)
-            ->get('/api/vacation_files',[])->dd();
+            ->get('/api/vacations',[])->dd();
 
 
         $this->assertResponseIsSuccessful();

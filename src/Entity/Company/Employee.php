@@ -102,7 +102,6 @@ class Employee
     #[Groups(['user:read','user:write','employee:read','employee:write'])]
     private ?bool $unActive = null;
 
-
     public function __construct()
     {
         $this->vacationLimits = new ArrayCollection();

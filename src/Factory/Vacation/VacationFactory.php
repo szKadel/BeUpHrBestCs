@@ -60,7 +60,7 @@ final class VacationFactory extends ModelFactory
             'dateTo' => self::faker()->dateTimeThisMonth('+20 days'),
             'employee' => $employee,
             'status' => VacationStatusFactory::findOrCreate(['name' => 'Potwierdzony']),
-            'type' => $vacation_type,
+            'type' => $vacation_type
         ];
     }
 

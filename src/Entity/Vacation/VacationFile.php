@@ -10,6 +10,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model;
 
 use App\Controller\Entity\CreatedVacationFile;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -51,22 +53,29 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class VacationFile
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
+    #[Groups(['vacation_file:read','vacationRequest:read'])]
     private ?int $id = null;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['vacation_file:read'])]
+    #[Groups(['vacation_file:read','vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]
     #[Assert\NotNull(groups: ['vacation_file:create'])]
+    #[Groups(['vacation_file:read','vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     public ?File $file = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['vacation_file:read'])]
+    #[Groups(['vacation_file:read','vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     public ?string $filePath = null;
 
-    #[ORM\ManyToOne(inversedBy: 'vacationFiles')]
-    private ?Vacation $vacation = null;
+    #[ORM\OneToMany(mappedBy: 'file', targetEntity: Vacation::class)]
+    private Collection $vacations;
+
+    public function __construct()
+    {
+        $this->vacations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -81,14 +90,32 @@ class VacationFile
         return $this->contentUrl;
     }
 
-    public function getVacation(): ?Vacation
+    /**
+     * @return Collection<int, Vacation>
+     */
+    public function getVacations(): Collection
     {
-        return $this->vacation;
+        return $this->vacations;
     }
 
-    public function setVacation(?Vacation $vacation): static
+    public function addVacation(Vacation $vacation): static
     {
-        $this->vacation = $vacation;
+        if (!$this->vacations->contains($vacation)) {
+            $this->vacations->add($vacation);
+            $vacation->setFile($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVacation(Vacation $vacation): static
+    {
+        if ($this->vacations->removeElement($vacation)) {
+            // set the owning side to null (unless already changed)
+            if ($vacation->getFile() === $this) {
+                $vacation->setFile(null);
+            }
+        }
 
         return $this;
     }
