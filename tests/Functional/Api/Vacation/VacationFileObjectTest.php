@@ -2,9 +2,7 @@
 
 namespace Functional\Api\Vacation;
 
-use ApiPlatform\Api\IriConverterInterface;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\Vacation\VacationFile;
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\UserFactory;
@@ -27,22 +25,34 @@ class VacationFileObjectTest extends ApiTestCase
             touch('files/test.txt');
         }
 
+        $department = DepartmentFactory::createMany(5);
+        $employee = EmployeeFactory::createOne();
+        $employee2 = EmployeeFactory::createOne();
+        $employee3 = EmployeeFactory::createOne();
+
+        $vacationType = VacationTypesFactory::createOne();
+        $vacationType2 = VacationTypesFactory::createOne();
+
+        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
+        VacationLimitsFactory::createOne(["employee"=>$employee2,'vacationType'=>$vacationType2, 'daysLimit'=>500]);
+
+        $user = UserFactory::createOne(['employee'=>$employee2,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
+
         $file = new UploadedFile('files/test.txt', 'test.txt');
         $client = self::createClient();
 
-        $result = $client->request('POST', '/api/vacation_files', [
+        $client->request('POST', '/api/vacation_files', [
             'headers' => ['Content-Type' => 'multipart/form-data'],
             'extra' => [
-                'parameters' => [
-                    'title' => 'My file uploaded',
-                ],
                 'files' => [
                     'file' => $file,
                 ],
             ]
-        ])->getContent();
+        ]);
 
-
+        $this->browser()
+            ->actingAs($user)
+            ->get('/api/vacation_files',[])->dd();
 
 
         $department = DepartmentFactory::createMany(5);
@@ -67,7 +77,7 @@ class VacationFileObjectTest extends ApiTestCase
 
         $this->browser()
             ->actingAs($user)
-            ->get('/api/vacations',[])->dd();
+            ->get('/api/vacation_files',[])->dd();
 
 
         $this->assertResponseIsSuccessful();

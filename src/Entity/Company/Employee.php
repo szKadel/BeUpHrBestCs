@@ -110,6 +110,7 @@ class Employee
         $this->vacations = new ArrayCollection();
         $this->employeeExtendedAccesses = new ArrayCollection();
         $this->subordinates = new ArrayCollection();
+        $this->setUnActive(false);
     }
 
     public function getId(): ?int
