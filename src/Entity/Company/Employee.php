@@ -351,9 +351,6 @@ class Employee
 
     public function getUnActive(): ?bool
     {
-        if(empty($this->unActive)) {
-            return false;
-        }
         return $this->unActive;
     }
 
