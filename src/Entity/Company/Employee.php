@@ -76,16 +76,11 @@ class Employee
     #[Groups(['employee:read'])]
     private ?string $email = null;
 
-    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'partial')]
-    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write','user:read','departmentOne:read'])]
-    private ?bool $unActive = null;
-
-
     #[ORM\Column(nullable: true)]
     private ?int $bitrixId = null;
 
     #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
-    #[Groups(['user:read','user:write','employee:read','employee:write','vacationRequest:read'])]
+    #[Groups(['user:read','user:write','employee:read','employee:write'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'employees')]
@@ -103,6 +98,11 @@ class Employee
 
     #[ORM\OneToMany(mappedBy: 'supervisor', targetEntity: self::class)]
     private Collection $subordinates;
+
+    #[ORM\Column()]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
+    #[Groups(['employee:read','employee:write','vacationRequest:read'])]
+    private ?bool $unActive = null;
 
     public function __construct()
     {
