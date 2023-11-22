@@ -75,7 +75,7 @@ class EmailService
 
     public function sendReplacementEmployeeNotification(Vacation $vacation):void
     {
-        if (!empty($vacation->getReplacement()?->getUser()->getEmail())) {
+        if (!empty($vacation->getReplacement()?->getUser()?->getEmail())) {
             $this->sendEmail(
                 "BestCs - powiadomienie",
                 $vacation->getReplacement()->getUser()->getEmail(),

@@ -32,6 +32,6 @@ class LoginTest extends ApiTestCase
         $user = UserFactory::createOne(['employee' => $employee,'email'=>"szymonkadelski@gmail.com",'password'=>'test']);
 
         $this->browser()
-            ->post('/login')->assertStatus(400)->assertAuthenticated();
+            ->post('/login')->assertStatus(401);
     }
 }
