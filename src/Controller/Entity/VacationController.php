@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -84,26 +85,23 @@ class VacationController extends AbstractController
             throw new BadRequestException("Nie znaleziono obiektu");
         }
 
-        $file = $vacation->getFile()->getContentUrl();
+        $file = $vacation->getFile()->getFilePath();
         $publicDirectory = $this->getParameter('kernel.project_dir') . '/public/';
 
 
-        $filePath = $publicDirectory . $filename;
+        $filePath = $publicDirectory . $file;
 
-        // Sprawdzenie czy plik istnieje
         if (!file_exists($filePath)) {
             throw $this->createNotFoundException('Plik nie istnieje.');
         }
 
-        // Tworzenie odpowiedzi typu BinaryFileResponse
         $response = new BinaryFileResponse($filePath);
 
-        // Ustawienie nagłówków odpowiedzi
         $response->headers->set('Content-Type', 'application/octet-stream');
-        $response->setContentDisposition(
-            Response::DISPOSITION_ATTACHMENT,
-            $filename
-        );
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $file
+        ));
 
         return $response;
     }

@@ -119,4 +119,12 @@ class VacationFile
 
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getFilePath(): ?string
+    {
+        return $this->filePath;
+    }
 }
