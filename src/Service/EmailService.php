@@ -66,7 +66,7 @@ class EmailService
                 $this->sendEmail(
                     "BestCs - powiadomienie",
                     $admin->getEmail(),
-                    "resetPassword.html.twig",
+                    "adminNewVacation.html.twig",
                     $vacation
                 );
             }
