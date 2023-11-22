@@ -48,6 +48,11 @@ class VacationRequestController
         $this -> setVacation($vacation);
         $this -> checkDateAvailability();
         $this -> checkVacationStatus();
+
+        if($vacation->getSpendVacationDays() == 0){
+            throw new BadRequestException('Wniosek nie może być wystawiony na 0 dni.');
+        }
+
         $this -> checkVacationDaysLimit();
         $this -> checkReplacement();
         $this -> vacation -> setCreatedBy($this->userRepository->find($this->security->getUser()->getId()));
