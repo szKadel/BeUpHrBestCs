@@ -125,7 +125,7 @@ class VacationStateProcessor implements ProcessorInterface
                         }
                     }
 
-                    if ($context["previous_data"]->getType()()->getName() == "Plan Urlopowy" &&
+                    if ($context["previous_data"]->getType()->getName() == "Plan urlopowy" &&
                         $data->getType() != $context["previous_data"]->getType()
                     )
                     {
