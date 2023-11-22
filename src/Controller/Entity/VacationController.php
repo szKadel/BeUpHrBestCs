@@ -4,6 +4,8 @@ namespace App\Controller\Entity;
 
 use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\User;
+use App\Entity\Vacation\Vacation;
+use App\Entity\Vacation\VacationFile;
 use App\Entity\Vacation\VacationLimits;
 use App\Entity\Vacation\VacationTypes;
 use App\Repository\EmployeeVacationLimitRepository;
@@ -11,6 +13,7 @@ use App\Repository\VacationRepository;
 use App\Repository\VacationTypesRepository;
 use App\Service\Vacation\CounterVacationDays;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,6 +67,45 @@ class VacationController extends AbstractController
             $postData-> dateTo ?? throw new BadRequestException(""),
             $postData-> departament ?? null
         );
+    }
+
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/api/vacation/{vacationId}/file/', methods: ['GET'])]
+    public function downloadFile(string $vacationId, VacationRepository $vacationRepository): Response
+    {
+        $vacation = $vacationRepository ->find($vacationId);
+
+        if(!$vacation instanceof Vacation){
+            throw new BadRequestException("Nie znaleziono obiektu");
+        }
+
+        if($vacation->getFile() instanceof VacationFile){
+            throw new BadRequestException("Nie znaleziono obiektu");
+        }
+
+        $file = $vacation->getFile()->getContentUrl();
+        $publicDirectory = $this->getParameter('kernel.project_dir') . '/public/';
+
+
+        $filePath = $publicDirectory . $filename;
+
+        // Sprawdzenie czy plik istnieje
+        if (!file_exists($filePath)) {
+            throw $this->createNotFoundException('Plik nie istnieje.');
+        }
+
+        // Tworzenie odpowiedzi typu BinaryFileResponse
+        $response = new BinaryFileResponse($filePath);
+
+        // Ustawienie nagłówków odpowiedzi
+        $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->setContentDisposition(
+            Response::DISPOSITION_ATTACHMENT,
+            $filename
+        );
+
+        return $response;
     }
 
 }

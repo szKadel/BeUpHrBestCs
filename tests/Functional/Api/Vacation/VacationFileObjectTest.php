@@ -82,4 +82,38 @@ class VacationFileObjectTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
     }
+
+    public function getVacationFile()
+    {
+        if (!file_exists('files/test.txt')) {
+            touch('files/test.txt');
+        }
+
+        $department = DepartmentFactory::createMany(5);
+        $employee = EmployeeFactory::createOne();
+        $employee2 = EmployeeFactory::createOne();
+        $employee3 = EmployeeFactory::createOne();
+
+        $vacationType = VacationTypesFactory::createOne();
+        $vacationType2 = VacationTypesFactory::createOne();
+
+        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
+        VacationLimitsFactory::createOne(["employee"=>$employee2,'vacationType'=>$vacationType2, 'daysLimit'=>500]);
+
+        $user = UserFactory::createOne(['employee'=>$employee2,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
+
+        $file = new UploadedFile('files/test.txt', 'test.txt');
+        $client = self::createClient();
+
+        $client->request('POST', '/api/vacation_files', [
+            'headers' => ['Content-Type' => 'multipart/form-data'],
+            'extra' => [
+                'files' => [
+                    'file' => $file,
+                ],
+            ]
+        ]);
+
+
+    }
 }

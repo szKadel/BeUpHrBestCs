@@ -23,6 +23,15 @@ class LoginTest extends ApiTestCase
                 'email'=>'szymonkadelski@gmail.com',
                 'password'=>'test'
             ]
-            ])->assertStatus(200)->assertAuthenticated();
+            ])->assertStatus(400)->assertAuthenticated();
+    }
+
+    public function testGetFile()
+    {
+        $employee = EmployeeFactory::createOne(['unActive'=>1]);
+        $user = UserFactory::createOne(['employee' => $employee,'email'=>"szymonkadelski@gmail.com",'password'=>'test']);
+
+        $this->browser()
+            ->post('/login')->assertStatus(400)->assertAuthenticated();
     }
 }

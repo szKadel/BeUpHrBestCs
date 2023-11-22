@@ -27,4 +27,6 @@ class LimitsVacationController
 
         return $limit[0];
     }
+
+
 }

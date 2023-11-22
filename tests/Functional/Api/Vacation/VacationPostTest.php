@@ -50,4 +50,6 @@ class VacationPostTest extends ApiTestCase
             ])
             ->assertStatus(400);
     }
+
+
 }
