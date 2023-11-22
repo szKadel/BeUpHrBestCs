@@ -62,6 +62,8 @@ final class EmployeeSubscriber implements EventSubscriberInterface
                 return 26;
             case 5:
                 return 4;
+            case 8:
+            case 9:
             case 15:
                 return 2;
             default:
