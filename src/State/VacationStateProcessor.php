@@ -132,6 +132,13 @@ class VacationStateProcessor implements ProcessorInterface
                         $data->setStatus($this->vacationStatusRepository->findByName("Oczekujący"));
                     }
                 }
+
+                if ($data->getType() != $context["previous_data"]->getType())
+                {
+                    if($context["previous_data"]->getType()->getName() == "Oczekujący" && $data->getType()->getName() == 'Plan urlopowy') {
+                        $data->setStatus($this->vacationStatusRepository->findByName("Zaplanowany"));
+                    }
+                }
             }
         }
 
