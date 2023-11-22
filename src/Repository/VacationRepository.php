@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Company\Department;
 use App\Entity\Company\Employee;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationStatus;
@@ -88,6 +89,32 @@ class VacationRepository extends ServiceEntityRepository
             ->setParameter('dateTo', $dateTo)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findAllVacationForCompany(string $dateFrom, string $dateTo, ?Department $department = null) :mixed
+    {
+
+        $query = $this->createQueryBuilder('v')
+            ->leftJoin('v.employee', "e")
+            ->andWhere('(v.dateTo BETWEEN :dateFrom AND :dateTo OR
+             v.dateFrom BETWEEN :dateFrom AND :dateTo OR 
+             :dateFrom BETWEEN v.dateFrom AND v.dateTo OR 
+             :dateTo BETWEEN v.dateFrom AND v.dateTo OR 
+             v.dateFrom BETWEEN :dateFrom AND :dateFrom OR 
+             v.dateFrom BETWEEN :dateFrom AND :dateTo OR
+             :dateFrom = v.dateTo OR
+              v.dateTo = :dateFrom OR
+              v.dateFrom = :dateTo)')
+            ->setParameter('dateFrom', $dateFrom)
+            ->setParameter('dateTo', $dateTo);
+
+        if($department != null)
+        {
+            $query->andWhere('e.department = :department');
+            $query->setParameter('department', $department);
+        }
+
+        return $query ->getQuery() ->getResult();
     }
 //    /**
 //     * @return Vacation[] Returns an array of Vacation objects

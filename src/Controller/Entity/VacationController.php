@@ -7,13 +7,17 @@ use App\Entity\User;
 use App\Entity\Vacation\VacationLimits;
 use App\Entity\Vacation\VacationTypes;
 use App\Repository\EmployeeVacationLimitRepository;
+use App\Repository\VacationRepository;
 use App\Repository\VacationTypesRepository;
 use App\Service\Vacation\CounterVacationDays;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class VacationController extends AbstractController
 {
@@ -44,6 +48,22 @@ class VacationController extends AbstractController
             'vacationDaysLeft' => $leftVacationDays ?? 0,
             'vacationDaysLimit' => $limit ?? 0
         ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/api/vacations/all', methods: ['GET'])]
+    public function getAllVacationAndSortThem(
+        VacationRepository $vacationRepository,
+        Request $request
+    )
+    {
+        $postData = json_decode($request->getContent());
+
+        return $vacationRepository->findAllVacationForCompany(
+            $postData-> dateFrom ?? throw new BadRequestException(""),
+            $postData-> dateTo ?? throw new BadRequestException(""),
+            $postData-> departament ?? null
+        );
     }
 
 }
