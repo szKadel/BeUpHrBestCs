@@ -208,7 +208,7 @@ class Vacation
         return $this->SpendVacationDays;
     }
 
-    private function setSpendVacationDays(): static
+    public function setSpendVacationDays(): static
     {
         $this->SpendVacationDays = WorkingDaysCounterService::countWorkingDays($this->dateFrom,$this->dateTo);
 

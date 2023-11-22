@@ -140,6 +140,8 @@ class VacationStateProcessor implements ProcessorInterface
                     }
                 }
             }
+
+            $data->setSpendVacationDays();
         }
 
         if($data instanceof VacationLimits)
