@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\State\ProcessorInterface;
+use App\Controller\Vacation\StatusVacationController;
 use App\Controller\Vacation\VacationRequestController;
 use App\Entity\User;
 use App\Entity\Vacation\Vacation;
@@ -34,7 +35,8 @@ class VacationStateProcessor implements ProcessorInterface
         private EmailService $emailService,
         private UserRepository $userRepository,
         private NotificationRepository $notificationRepository,
-        private CounterVacationDays $counterVacationDays
+        private CounterVacationDays $counterVacationDays,
+        private VacationStatusRepository $vacationStatusRepository
     )
     {
 
@@ -121,6 +123,13 @@ class VacationStateProcessor implements ProcessorInterface
                         if ($user instanceof User) {
                             $data->setAnnulledBy($user);
                         }
+                    }
+
+                    if ($context["previous_data"]->getType()()->getName() == "Plan Urlopowy" &&
+                        $data->getType() != $context["previous_data"]->getType()
+                    )
+                    {
+                        $data->setStatus($this->vacationStatusRepository->findByName("Oczekujący"));
                     }
                 }
             }
