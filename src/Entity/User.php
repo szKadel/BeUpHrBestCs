@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[UniqueEntity(fields: ['email'],message: 'This email has been allready register.')]
 #[UniqueEntity(fields: ['username'],message: 'This username has been allready register.')]
-#[ApiFilter(SearchFilter::class,properties: ['employee.department'=>'exact'])]
+#[ApiFilter(SearchFilter::class,properties: ['employee'=>'exact'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -71,6 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $apiTokens;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
     #[Groups(['user:read', 'user:write','vacationRequest:read'])]
     private ?Employee $employee = null;
 
