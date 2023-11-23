@@ -19,7 +19,7 @@ class CreatedVacationFile extends AbstractController
             throw new BadRequestHttpException('"file" is required');
         }
         $mediaObject = new VacationFile();
-        $mediaObject->file = $uploadedFile;
+        $mediaObject->setFile($uploadedFile);
 
         return $mediaObject;
     }
