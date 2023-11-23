@@ -78,6 +78,7 @@ class VacationFile
     public function __construct()
     {
         $this->vacations = new ArrayCollection();
+        $this->setNewFileName();
     }
 
     public function getId(): ?int
