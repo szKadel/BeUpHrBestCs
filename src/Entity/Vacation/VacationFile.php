@@ -153,7 +153,7 @@ class VacationFile
     public function setFile(?File $file): void
     {
         $this->file = $file;
-        $this->setNewFileName($this->file->getFilename());
+        $this->setNewFileName($file?->getFilename());
     }
 
 }
