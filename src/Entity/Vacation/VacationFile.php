@@ -69,6 +69,10 @@ class VacationFile
     #[Groups(['vacation_file:read','vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     public ?string $filePath = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['vacation_file:read','vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
+    public ?string $fileName ;
+
     #[ORM\OneToMany(mappedBy: 'file', targetEntity: Vacation::class)]
     private Collection $vacations;
 

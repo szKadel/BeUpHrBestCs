@@ -20,6 +20,8 @@ class CreatedVacationFile extends AbstractController
 
         $mediaObject = new VacationFile();
         $mediaObject->file = $uploadedFile;
+        $mediaObject->fileName = $uploadedFile->getClientOriginalExtension();
+
 
         return $mediaObject;
     }
