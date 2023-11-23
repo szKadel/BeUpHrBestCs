@@ -136,7 +136,7 @@ class VacationFile
      */
     public function getNewFileName(): ?string
     {
-        return $this->newFileName = $this->file->getFilename();
+        return $this->newFileName ?? null;
     }
 
     /**
@@ -144,7 +144,7 @@ class VacationFile
      */
     public function setNewFileName(?string $newFileName): void
     {
-        $this->newFileName = $this->file->getFilename();
+        $this->newFileName = $newFileName;
     }
 
 }
