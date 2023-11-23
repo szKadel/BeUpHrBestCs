@@ -69,13 +69,17 @@ class VacationFile
     #[Groups(['vacation_file:read','vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     public ?string $filePath = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['vacation_file:read','vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
+    public ?string $newFileName = null;
+
     #[ORM\OneToMany(mappedBy: 'file', targetEntity: Vacation::class)]
     private Collection $vacations;
-
 
     public function __construct()
     {
         $this->vacations = new ArrayCollection();
+        $this->newFileName = $this->file->getFilename();
     }
 
     public function getId(): ?int
@@ -127,6 +131,22 @@ class VacationFile
     public function getFilePath(): ?string
     {
         return $this->filePath;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNewFileName(): ?string
+    {
+        return $this->newFileName;
+    }
+
+    /**
+     * @param string|null $newFileName
+     */
+    public function setNewFileName(?string $newFileName): void
+    {
+        $this->newFileName = $newFileName;
     }
 
 }
