@@ -85,7 +85,7 @@ class VacationController extends AbstractController
         }
 
         $file = $vacation->getFile()->getFilePath();
-        $publicDirectory = $this->getParameter('kernel.project_dir') . '/public/';
+        $publicDirectory = $this->getParameter('kernel.project_dir') . '/public/files/vacations/';
 
 
         $filePath = $publicDirectory . $file;
