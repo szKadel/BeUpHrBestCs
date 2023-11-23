@@ -89,7 +89,7 @@ class VacationController extends AbstractController
 
 
         $filePath = $publicDirectory . $file;
-        dd($filePath);
+
         if (!file_exists($filePath)) {
             throw $this->createNotFoundException('Plik nie istnieje.');
         }
