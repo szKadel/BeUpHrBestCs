@@ -71,7 +71,6 @@ class VacationController extends AbstractController
     }
 
 
-    #[IsGranted('ROLE_USER')]
     #[Route('/api/vacation/{vacationId}/file/', methods: ['GET'])]
     public function downloadFile(string $vacationId, VacationRepository $vacationRepository): Response
     {

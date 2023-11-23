@@ -13,8 +13,8 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CounterVacationDays
 {
-    const HOLLIDAY = "";
-    const HOLLIDAY_ON_DEMEND = "";
+    const HOLLIDAY = "Urlop Wypoczynkowy";
+    const HOLLIDAY_ON_DEMEND = "Urlop na żądanie";
 
     public function __construct(
         private VacationRepository $vacationRepository,
@@ -25,7 +25,7 @@ class CounterVacationDays
     public function countHolidaysForEmployee(Employee $employee): int
     {
 
-        $holidayType = $this->typesRepository->findBy(['name'=>'Urlop Wypoczynkowy'])[0];
+        $holidayType = $this->typesRepository->findBy(['name'=>self::HOLLIDAY])[0];
         $holidayOnRequestType = $this->typesRepository->findBy(['name'=>'Urlop na żądanie'])[0];
 
         $spendDaysOnRequestType = $this->countVacationSpendDays($employee, $holidayOnRequestType);

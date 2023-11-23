@@ -100,7 +100,7 @@ class VacationRequestController
             return;
         }
 
-        $limitDays = $this->getVacationLimits()->getDaysLimit();
+        $limitDays = $this->getVacationLimits()->getDaysLimit() + $this->getVacationLimits()->getUnusedDaysFromPreviousYear() ?? 0;
 
         $spendDays = $this->counterVacationDays->countVacationSpendDays($this->vacation->getEmployee(),$this->vacation->getType());
 
