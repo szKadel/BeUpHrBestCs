@@ -79,8 +79,8 @@ class VacationController extends AbstractController
         if(!$vacation instanceof Vacation){
             throw new BadRequestException("Nie znaleziono obiektu vacation");
         }
-        dd($vacation->getFile());
-        if($vacation->getFile() instanceof VacationFile){
+
+        if($vacation->getFile()?->getId() != null){
             throw new BadRequestException("Nie znaleziono obiektu obiektu VacationFile");
         }
 
