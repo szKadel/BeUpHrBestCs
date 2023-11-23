@@ -69,13 +69,9 @@ class VacationFile
     #[Groups(['vacation_file:read','vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     public ?string $filePath = null;
 
-
-
     #[ORM\OneToMany(mappedBy: 'file', targetEntity: Vacation::class)]
     private Collection $vacations;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $fileName = null;
 
     public function __construct()
     {
@@ -133,15 +129,4 @@ class VacationFile
         return $this->filePath;
     }
 
-    public function getFileName(): ?string
-    {
-        return $this->fileName;
-    }
-
-    public function setFileName(?string $fileName): static
-    {
-        $this->fileName = $fileName;
-
-        return $this;
-    }
 }

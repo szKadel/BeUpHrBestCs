@@ -4,6 +4,7 @@ namespace App\Controller\Entity;
 
 use App\Entity\Vacation\VacationFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -17,11 +18,8 @@ class CreatedVacationFile extends AbstractController
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"file" is required');
         }
-
         $mediaObject = new VacationFile();
         $mediaObject->file = $uploadedFile;
-        $mediaObject->setFileName($uploadedFile->getClientOriginalExtension());
-
 
         return $mediaObject;
     }
