@@ -80,7 +80,7 @@ class VacationController extends AbstractController
             throw new BadRequestException("Nie znaleziono obiektu vacation");
         }
 
-        if($vacation->getFile() != null){
+        if($vacation->getFile()?->getId() == null){
             throw new BadRequestException("Nie znaleziono obiektu obiektu VacationFile");
         }
 
