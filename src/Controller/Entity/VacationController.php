@@ -61,11 +61,13 @@ class VacationController extends AbstractController
     )
     {
 
-        return $vacationRepository->findAllVacationForCompany(
+        $result = $vacationRepository->findAllVacationForCompany(
             $request->get("dateFrom") ?? throw new BadRequestException("dateFrom is required"),
             $request-> get("dateTo") ?? throw new BadRequestException("dateTo is required"),
             $request-> get("department") ?? null
         );
+
+        return new JsonResponse($result);
     }
 
 
