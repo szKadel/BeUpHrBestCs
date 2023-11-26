@@ -58,28 +58,28 @@ class Vacation
     #[Assert\NotBlank]
     #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
     #[ApiFilter(SearchFilter::class,strategy: 'exact')]
-    private ?Employee $employee = null;
+    public ?Employee $employee = null;
 
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
     #[ApiFilter(SearchFilter::class,strategy: 'exact')]
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
-    private ?VacationTypes $type = null;
+    public ?VacationTypes $type = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[ApiFilter(DateFilter::class)]
     #[Assert\NotBlank]
     #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
-    private ?DateTimeInterface $dateFrom = null;
+    public ?DateTimeInterface $dateFrom = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank]
     #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     #[ApiFilter(DateFilter::class)]
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
-    private ?DateTimeInterface $dateTo = null;
+    public ?DateTimeInterface $dateTo = null;
 
     #[ORM\Column]
     #[Groups('vacationRequest:read')]
@@ -93,7 +93,7 @@ class Vacation
     #[ApiFilter(SearchFilter::class,strategy: 'exact')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['vacationRequest:read','vacationRequest:update'])]
-    private ?VacationStatus $status = null;
+    public ?VacationStatus $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]

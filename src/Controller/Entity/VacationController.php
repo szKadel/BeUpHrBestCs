@@ -69,17 +69,8 @@ class VacationController extends AbstractController
             $request-> get("department") ?? null
         );
 
-        foreach ($resultDb as $vacation) {
-            $result[] = [
-                'vacation' => json_encode($this->iriConverter->getResourceFromIri('api/vacations/'.$vacation->getId())),
-                'employee' => json_encode($this->iriConverter->getResourceFromIri('api/employees/'.$vacation->getEmployee()->getId())),
-                'dateFrom' => $vacation->getDateFrom()->format('Y-m-d'),
-                'dateTo' => $vacation->getDateTo()->format('Y-m-d')
-            ];
 
-        }
-
-        return new JsonResponse($result ?? []);
+        return new JsonResponse($resultDb ?? []);
     }
 
 
