@@ -61,13 +61,26 @@ class VacationController extends AbstractController
     )
     {
 
-        $result = $vacationRepository->findAllVacationForCompany(
+        $resultDb = $vacationRepository->findAllVacationForCompany(
             $request->get("dateFrom") ?? throw new BadRequestException("dateFrom is required"),
             $request-> get("dateTo") ?? throw new BadRequestException("dateTo is required"),
             $request-> get("department") ?? null
         );
 
-        return new JsonResponse($result);
+        foreach ($resultDb as $vacation) {
+            $result[] = [
+                'vacation_id' => $vacation->getId(),
+                'employee_id' => $vacation->getEmployee()->getId(),
+                'employee_name' => $vacation->getEmployee()->getName() ?? "",
+                'employee_surname' => $vacation->getEmployee()->getSurname() ?? "",
+                'department' => $vacation->getEmployee()->getDepartment()?->getName() ?? "",
+                'dateFrom' => $vacation->getDateFrom()->format('Y-m-d'),
+                'dateTo' => $vacation->getDateTo()->format('Y-m-d')
+            ];
+
+        }
+
+        return new JsonResponse($result ?? []);
     }
 
 
