@@ -57,10 +57,10 @@ class HomeController extends AbstractController
         Request $request
     ): JsonResponse
     {
-        var_dump($request->query->get("dateFrom"));
+
         $resultDb = $vacationRepository->findAllVacationForCompany(
-            $request->query->get("dateFrom") ?? throw new BadRequestException("dateFrom is required"),
-            $request->query-> get("dateTo") ?? throw new BadRequestException("dateTo is required"),
+            $request->query->get('dateFrom') ?? throw new BadRequestException("dateFrom is required"),
+            $request->query->get('dateTo') ?? throw new BadRequestException("dateTo is required"),
             $request->query->get("department") ?? null
         );
 
