@@ -72,7 +72,7 @@ class VacationController extends AbstractController
         foreach ($resultDb as $vacation) {
             $result[] = [
                 'vacation' => $this->iriConverter->getResourceFromIri('api/vacations/'.$vacation->getId()),
-                'employee' => $this->iriConverter->getResourceFromIri('api/employee/'.$vacation->getEployee()->getId()),
+                'employee' => $this->iriConverter->getResourceFromIri('api/employee/'.$vacation->getEmployee()->getId()),
                 'dateFrom' => $vacation->getDateFrom()->format('Y-m-d'),
                 'dateTo' => $vacation->getDateTo()->format('Y-m-d')
             ];
