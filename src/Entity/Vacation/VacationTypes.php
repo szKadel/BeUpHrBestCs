@@ -24,11 +24,11 @@ class VacationTypes
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['vacationType:read'])]
-    private ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['vacationType:read', 'vacationType:write','vacationRequest:read','vacationLimit:read','employee:read'])]
-    private ?string $name = null;
+    public ?string $name = null;
 
     public function getId(): ?int
     {

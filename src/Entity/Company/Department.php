@@ -27,11 +27,11 @@ class Department
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['department:read','vacationRequest:read'])]
-    private ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['department:read','department:write','employee:read','departmentOne:read','vacationRequest:read'])]
-    private ?string $name = null;
+    public ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'department', targetEntity: Employee::class)]
     #[Groups(['departmentOne:read'])]
