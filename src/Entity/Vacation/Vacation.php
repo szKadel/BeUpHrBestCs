@@ -49,7 +49,7 @@ class Vacation
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups('vacationRequest:read')]
-    private ?int $id = null;
+    public ?int $id = null;
 
 
     #[ORM\ManyToOne(inversedBy: 'vacations')]
