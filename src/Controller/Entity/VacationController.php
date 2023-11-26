@@ -61,6 +61,7 @@ class VacationController extends AbstractController
         Request $request
     )
     {
+
         $postData = json_decode($request->getContent());
 
         return $vacationRepository->findAllVacationForCompany(
