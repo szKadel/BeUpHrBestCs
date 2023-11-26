@@ -54,7 +54,7 @@ class VacationController extends AbstractController
         ]);
     }
 
-    #[Route('/api/calendar/vacations/', methods: ['GET'])]
+    #[Route('/api/calendar/vacations', methods: ['GET'])]
     public function getAllVacationAndSortThem(
         VacationRepository $vacationRepository,
         Request $request
