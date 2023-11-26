@@ -61,7 +61,7 @@ class HomeController extends AbstractController
         $resultDb = $vacationRepository->findAllVacationForCompany(
             $request->query->get('dateFrom') ?? throw new BadRequestException("dateFrom is required"),
             $request->query->get('dateTo') ?? throw new BadRequestException("dateTo is required"),
-            $request->query->get("department") ?? null
+            $request->query->get("department_id") ?? null
         );
 
         foreach ($resultDb as $vacation) {
