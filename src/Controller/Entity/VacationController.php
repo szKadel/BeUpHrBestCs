@@ -72,16 +72,15 @@ class VacationController extends AbstractController
 
         foreach ($resultDb as $vacation) {
             $result[] = [
-                'vacation_id' => $vacation->getId(),
-                'employee_id' => $vacation->getEmployee()->getId(),
+                'vacation_id' => 'api/vacations/'.$vacation->getId(),
+                'employee_id' => 'api/employees/'.$vacation->getEmployee()->getId(),
                 'employee_name' => $vacation->getEmployee()->getName() ?? "",
                 'employee_surname' => $vacation->getEmployee()->getSurname() ?? "",
-                'department' => $vacation->getEmployee()->getDepartment()?->getName() ?? "",
                 'dateFrom' => $vacation->getDateFrom()->format('Y-m-d'),
                 'dateTo' => $vacation->getDateTo()->format('Y-m-d'),
-                'type_id' => $vacation?->getType()?->getId() ?? "",
+                'type_id' => 'api/vacation_types/'.$vacation?->getType()?->getId() ?? "",
                 'type_name' => $vacation?->getType()?->getName() ?? "",
-                'status_id' => $vacation?->getStatus()?->getId() ?? "",
+                'status_id' => 'api/vacation_statuses/'.$vacation?->getStatus()?->getId() ?? "",
                 'status_name' => $vacation?->getStatus()?->getName() ?? "",
             ];
 
