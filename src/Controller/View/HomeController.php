@@ -50,7 +50,7 @@ class HomeController extends AbstractController
         return new JsonResponse($result ?? []);
     }
 
-    #[Route('/api/calendar/vacations', methods: ['GET'])]
+    #[Route('/api/calendar/vacations')]
     #[IsGranted('ROLE_USER')]
     public function getAllVacationAndSortThem(
         VacationRepository $vacationRepository,
