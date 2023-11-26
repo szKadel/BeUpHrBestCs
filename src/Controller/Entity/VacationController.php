@@ -79,7 +79,7 @@ class VacationController extends AbstractController
 
         }
 
-        return new JsonResponse($result ?? []);
+        return new JsonResponse(json_encode($result) ?? []);
     }
 
 
