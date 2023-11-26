@@ -91,7 +91,7 @@ class VacationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAllVacationForCompany(string $dateFrom, string $dateTo, ?Department $department = null) :mixed
+    public function findAllVacationForCompany(string $dateFrom, string $dateTo, string $department = null) :mixed
     {
         $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
         $statusPlaned = $this->vacationStatusRepository->findByName("Zaplanowany");

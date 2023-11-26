@@ -59,11 +59,10 @@ class HomeController extends AbstractController
     {
 
         $resultDb = $vacationRepository->findAllVacationForCompany(
-            $request->get("dateFrom") ?? throw new BadRequestException("dateFrom is required"),
-            $request-> get("dateTo") ?? throw new BadRequestException("dateTo is required"),
-            $request-> get("department") ?? null
+            $request->query->get("dateFrom") ?? throw new BadRequestException("dateFrom is required"),
+            $request->query-> get("dateTo") ?? throw new BadRequestException("dateTo is required"),
+            $request->query->get("department") ?? null
         );
-
 
         foreach ($resultDb as $vacation) {
             if ($vacation instanceof Vacation) {
