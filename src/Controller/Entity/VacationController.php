@@ -56,40 +56,6 @@ class VacationController extends AbstractController
         ]);
     }
 
-    #[Route('/api/calendar/vacations', methods: ['GET'])]
-    public function getAllVacationAndSortThem(
-        VacationRepository $vacationRepository,
-        Request $request
-    ): JsonResponse
-    {
-
-        $resultDb = $vacationRepository->findAllVacationForCompany(
-            $request->get("dateFrom") ?? throw new BadRequestException("dateFrom is required"),
-            $request-> get("dateTo") ?? throw new BadRequestException("dateTo is required"),
-            $request-> get("department") ?? null
-        );
-
-
-        foreach ($resultDb as $vacation) {
-            if ($vacation instanceof Vacation) {
-                $result[] = [
-                    'vacation_iri' => 'api/vacations/' . $vacation->getId(),
-                    'employee_iri' => 'api/employees/' . $vacation->getEmployee()->getId(),
-                    'employee_name' => $vacation->getEmployee()->getName() ?? "",
-                    'employee_surname' => $vacation->getEmployee()->getSurname() ?? "",
-                    'dateFrom' => $vacation->getDateFrom()->format('Y-m-d'),
-                    'dateTo' => $vacation->getDateTo()->format('Y-m-d'),
-                    'type_iri' => 'api/vacation_types/' . $vacation?->getType()?->getId() ?? "",
-                    'type_name' => $vacation?->getType()?->getName() ?? "",
-                    'status_iri' => 'api/vacation_statuses/' . $vacation?->getStatus()?->getId() ?? "",
-                    'status_name' => $vacation?->getStatus()?->getName() ?? "",
-                ];
-            }
-        }
-
-        return new JsonResponse($result ?? []);
-    }
-
 
     #[Route('/api/vacation/{vacationId}/file/', methods: ['GET'])]
     public function downloadFile(string $vacationId, VacationRepository $vacationRepository): Response
