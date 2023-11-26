@@ -62,4 +62,14 @@ class LastYearLimitsCountTest extends KernelTestCase
 
     }
 
+    public function getTest(){
+        $employee = EmployeeFactory::createOne();
+        $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_ADMIN']]);
+
+        $this->browser()
+            ->actingAs($user)
+            ->get("/Vacations/YearSummation")
+            ->assertStatus(200);
+    }
+
 }
