@@ -51,6 +51,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/api/calendar/vacations', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function getAllVacationAndSortThem(
         VacationRepository $vacationRepository,
         Request $request
