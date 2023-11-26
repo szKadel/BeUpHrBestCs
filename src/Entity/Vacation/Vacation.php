@@ -251,9 +251,6 @@ class Vacation
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getAnnulledAt()
     {
         return $this->annulledAt;
