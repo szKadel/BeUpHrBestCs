@@ -26,7 +26,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class VacationController extends AbstractController
 {
 
-    public function __construct(private CounterVacationDays $counterVacationDays)
+    public function __construct(private CounterVacationDays $counterVacationDays,
+    private IriConverterInterface $iriConverter
+        )
     {
     }
 
@@ -69,11 +71,8 @@ class VacationController extends AbstractController
 
         foreach ($resultDb as $vacation) {
             $result[] = [
-                'vacation_id' => $vacation->getId(),
-                'employee_id' => $vacation->getEmployee()->getId(),
-                'employee_name' => $vacation->getEmployee()->getName() ?? "",
-                'employee_surname' => $vacation->getEmployee()->getSurname() ?? "",
-                'department' => $vacation->getEmployee()->getDepartment()?->getName() ?? "",
+                'vacation' => $this->iriConverter->getResourceFromIri('api/vacations/'.$vacation->getId()),
+                'employee' => $this->iriConverter->getResourceFromIri('api/employee/'.$vacation->getEployee()->getId()),
                 'dateFrom' => $vacation->getDateFrom()->format('Y-m-d'),
                 'dateTo' => $vacation->getDateTo()->format('Y-m-d')
             ];
