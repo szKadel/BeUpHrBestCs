@@ -93,6 +93,8 @@ class VacationRepository extends ServiceEntityRepository
 
     public function findAllVacationForCompany(string $dateFrom, string $dateTo, ?Department $department = null) :mixed
     {
+        $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
+        $statusPlaned = $this->vacationStatusRepository->findByName("Zaplanowany");
 
         $query = $this->createQueryBuilder('v')
             ->leftJoin('v.employee', "e")
@@ -105,7 +107,10 @@ class VacationRepository extends ServiceEntityRepository
              :dateFrom = v.dateTo OR
               v.dateTo = :dateFrom OR
               v.dateFrom = :dateTo)')
+            ->andWhere('(v.status = :accepted OR v.status = :planed)')
             ->setParameter('dateFrom', $dateFrom)
+            ->setParameter('accepted', $statusAccepted)
+            ->setParameter('planed', $statusPlaned)
             ->setParameter('dateTo', $dateTo);
 
         if($department != null)

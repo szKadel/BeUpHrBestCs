@@ -64,8 +64,8 @@ class VacationController extends AbstractController
         $postData = json_decode($request->getContent());
 
         return $vacationRepository->findAllVacationForCompany(
-            $postData-> dateFrom ?? throw new BadRequestException(""),
-            $postData-> dateTo ?? throw new BadRequestException(""),
+            $postData-> dateFrom ?? throw new BadRequestException("dateFrom is required"),
+            $postData-> dateTo ?? throw new BadRequestException("dateTo is required"),
             $postData-> departament ?? null
         );
     }
