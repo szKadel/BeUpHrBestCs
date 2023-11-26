@@ -60,7 +60,7 @@ class VacationController extends AbstractController
     public function getAllVacationAndSortThem(
         VacationRepository $vacationRepository,
         Request $request
-    )
+    ): JsonResponse
     {
 
         $resultDb = $vacationRepository->findAllVacationForCompany(

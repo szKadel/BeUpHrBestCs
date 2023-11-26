@@ -3,10 +3,13 @@
 
 namespace App\Controller\View;
 
+use App\Entity\Vacation\Vacation;
 use App\Repository\VacationRepository;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -42,6 +45,40 @@ class HomeController extends AbstractController
                 'replacement_surname' => $vacation?->getReplacement()?->getSurname() ?? "",
             ];
 
+        }
+
+        return new JsonResponse($result ?? []);
+    }
+
+    #[Route('/api/calendar/vacations', methods: ['GET'])]
+    public function getAllVacationAndSortThem(
+        VacationRepository $vacationRepository,
+        Request $request
+    ): JsonResponse
+    {
+
+        $resultDb = $vacationRepository->findAllVacationForCompany(
+            $request->get("dateFrom") ?? throw new BadRequestException("dateFrom is required"),
+            $request-> get("dateTo") ?? throw new BadRequestException("dateTo is required"),
+            $request-> get("department") ?? null
+        );
+
+
+        foreach ($resultDb as $vacation) {
+            if ($vacation instanceof Vacation) {
+                $result[] = [
+                    'vacation_iri' => 'api/vacations/' . $vacation->getId(),
+                    'employee_iri' => 'api/employees/' . $vacation->getEmployee()->getId(),
+                    'employee_name' => $vacation->getEmployee()->getName() ?? "",
+                    'employee_surname' => $vacation->getEmployee()->getSurname() ?? "",
+                    'dateFrom' => $vacation->getDateFrom()->format('Y-m-d'),
+                    'dateTo' => $vacation->getDateTo()->format('Y-m-d'),
+                    'type_iri' => 'api/vacation_types/' . $vacation?->getType()?->getId() ?? "",
+                    'type_name' => $vacation?->getType()?->getName() ?? "",
+                    'status_iri' => 'api/vacation_statuses/' . $vacation?->getStatus()?->getId() ?? "",
+                    'status_name' => $vacation?->getStatus()?->getName() ?? "",
+                ];
+            }
         }
 
         return new JsonResponse($result ?? []);
