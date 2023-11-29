@@ -95,6 +95,7 @@ class VacationRepository extends ServiceEntityRepository
     {
         $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
         $statusPlaned = $this->vacationStatusRepository->findByName("Zaplanowany");
+        $statusWaiting = $this->vacationStatusRepository->findByName("Oczekujący");
 
         $query = $this->createQueryBuilder('v')
             ->leftJoin('v.employee', "e")
@@ -107,7 +108,11 @@ class VacationRepository extends ServiceEntityRepository
              :dateFrom = v.dateTo OR
               v.dateTo = :dateFrom OR
               v.dateFrom = :dateTo)')
+            ->andWhere('(v.status = :accepted OR v.status = :planed OR v.status = :waiting)')
             ->setParameter('dateFrom', $dateFrom)
+            ->setParameter('accepted', $statusAccepted)
+            ->setParameter('planed', $statusPlaned)
+            ->setParameter('waiting', $statusWaiting)
             ->setParameter('dateTo', $dateTo);
 
         if($department != null)
