@@ -40,7 +40,7 @@ class SecurityController extends AbstractController
             throw new UnauthorizedHttpException("");
         }
 
-        if($user->getEmployee()->getUnActive()){
+        if($user->getEmployee()?->getUnActive() || $user->getEmployee()?->getUnActive() == null){
             throw new BadRequestException("Twoje konto zostało zawieszone, skontaktuj się z administratorem.");
         }
 
