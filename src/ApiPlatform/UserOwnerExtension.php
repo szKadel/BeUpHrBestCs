@@ -20,6 +20,7 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
+        set_time_limit(60);
         $this->addWhere($queryBuilder, $resourceClass);
         $this->groupModerator($queryBuilder, $resourceClass);
     }
