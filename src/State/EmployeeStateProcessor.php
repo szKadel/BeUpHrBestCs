@@ -4,6 +4,7 @@ namespace App\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Company\Employee;
 use App\Entity\Vacation\Vacation;
@@ -15,6 +16,8 @@ class EmployeeStateProcessor implements ProcessorInterface
     {
         if($data instanceof Employee) {
             if ($operation instanceof Post) {
+
+            }elseif($operation instanceof Put){
 
             }
         }

@@ -46,6 +46,7 @@ class VacationRequestController
         }
 
         $this -> setVacation($vacation);
+        $this -> checkRights();
         $this -> checkDateAvailability();
         $this -> checkVacationStatus();
 
@@ -58,6 +59,17 @@ class VacationRequestController
         $this -> vacation -> setCreatedBy($this->userRepository->find($this->security->getUser()->getId()));
         $this -> vacation -> setCreatedAt(new DateTime());
         $this -> emailNotificationController    ->  OnVacationAdd($vacation);
+    }
+
+    public function checkRights() :void
+    {
+        if($this->security->isGranted('ROLE_ADMIN')){
+            return;
+        }
+
+        if($this->vacation->getEmployee()->getId() != $this->security->getUser()->getEmployee()->getId()){
+            throw new BadRequestException("Brak Uprawnień",403);
+        }
     }
 
     public function onVacationUpdate(Vacation $vacation, Vacation $previousVacation):void
