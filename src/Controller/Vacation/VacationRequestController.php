@@ -68,7 +68,7 @@ class VacationRequestController
         }
 
         if($this->vacation->getEmployee()->getId() != $this->security->getUser()->getEmployee()->getId()){
-            throw new BadRequestException("Brak Uprawnień",403);
+            throw new BadRequestException("Brak uprawnień, aby utworzyć wniosek za innego użytkownika",401);
         }
     }
 
