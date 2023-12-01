@@ -124,7 +124,7 @@ class Vacation
 
     #[ORM\ManyToOne]
     #[Groups(['vacationRequest:read'])]
-    private ?User $AnnulledBy = null;
+    private ?User $annulledBy = null;
 
     #[ORM\ManyToOne(inversedBy: 'vacations')]
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
