@@ -69,7 +69,7 @@ class VacationStateProcessor implements ProcessorInterface
 
                         $data->setAnnulledAt(new \DateTimeImmutable());
 
-                        $data->setAnnulledBy($data->getEmployee()->getUser());
+                        $data->setAnnulledBy($this->userRepository->find($user->getId()));
                     }
 
                     if($data->getStatus()->getName() == "Potwierdzony") {
