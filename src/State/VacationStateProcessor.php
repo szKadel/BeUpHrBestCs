@@ -106,7 +106,8 @@ class VacationStateProcessor implements ProcessorInterface
                     }
 
                     $date = date('Y-m-d');
-                    if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"" && $date <= $data->getDateFrom()) {
+
+                    if($this->security->getUser()->getId() == $data->getEmployee()->getUser()?->getId() && $date <= $data->getDateFrom()) {
                         $user = $this->security->getUser();
 
                         $data->setAnnulledAt(new \DateTimeImmutable());
