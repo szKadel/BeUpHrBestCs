@@ -64,6 +64,14 @@ class VacationStateProcessor implements ProcessorInterface
 
                 if($data->getStatus() != $context["previous_data"]->getStatus())
                 {
+                    if($data->getStatus()->getName() == "Anulowany") {
+                        $user = $this->security->getUser();
+
+                        $data->setAnnulledAt(new \DateTimeImmutable());
+
+                        $data->setAnnulledBy($data->getEmployee()->getUser());
+                    }
+
                     if($data->getStatus()->getName() == "Potwierdzony") {
 
                         $data->setAcceptedAt(new \DateTimeImmutable());
@@ -96,7 +104,6 @@ class VacationStateProcessor implements ProcessorInterface
                     if($this->notificationRepository ->getNotificationsSettings()?->isNotificateAdminOnAcceptVacation()) {
                         $this->emailService -> sendNotificationEmailToAllAdmin($data);
                     }
-
                 }
 
                 if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
