@@ -82,14 +82,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'acceptedBy', targetEntity: Vacation::class)]
     private ?Collection $AcceptedVacations;
 
-    #[ORM\OneToMany(mappedBy: 'AnnulledBy', targetEntity: Vacation::class)]
-    private ?Collection $AnnulledVacationRequest;
-
     public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
         $this->AcceptedVacations = new ArrayCollection();
-        $this->AnnulledVacationRequest = new ArrayCollection();
     }
 
     public function preRemove()
@@ -268,36 +264,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($acceptedVacation->getAcceptedBy() === $this) {
                 $acceptedVacation->setAcceptedBy(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Vacation>
-     */
-    public function getAnnulledVacationRequest(): Collection
-    {
-        return $this->AnnulledVacationRequest;
-    }
-
-    public function addAnnulledVacationRequest(Vacation $annulledVacationRequest): static
-    {
-        if (!$this->AnnulledVacationRequest->contains($annulledVacationRequest)) {
-            $this->AnnulledVacationRequest->add($annulledVacationRequest);
-            $annulledVacationRequest->setAnnulledBy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAnnulledVacationRequest(Vacation $annulledVacationRequest): static
-    {
-        if ($this->AnnulledVacationRequest->removeElement($annulledVacationRequest)) {
-            // set the owning side to null (unless already changed)
-            if ($annulledVacationRequest->getAnnulledBy() === $this) {
-                $annulledVacationRequest->setAnnulledBy(null);
             }
         }
 
