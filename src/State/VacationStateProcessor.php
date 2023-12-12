@@ -93,6 +93,11 @@ class VacationStateProcessor implements ProcessorInterface
 
                     if($data->getStatus()->getName() == "Odrzucony") {
 
+                        if ($this->notificationRepository->getNotificationsSettings(
+                        )?->isNotificateAdminOnAcceptVacation()) {
+                            $this->emailService->sendNotificationEmailToAllAdmin($data);
+                        }
+
                         if ($this->notificationRepository -> getNotificationsSettings() ?-> isNotificateUserOnVacationRequestAccept()) {
                             $this->emailService -> sendNotificationToOwnerOnChangeStatus($data);
                         }

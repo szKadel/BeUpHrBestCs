@@ -80,10 +80,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\OneToMany(mappedBy: 'acceptedBy', targetEntity: Vacation::class)]
-    private Collection $AcceptedVacations;
+    private ?Collection $AcceptedVacations;
 
     #[ORM\OneToMany(mappedBy: 'AnnulledBy', targetEntity: Vacation::class)]
-    private Collection $AnnulledVacationRequest;
+    private ?Collection $AnnulledVacationRequest;
 
     public function __construct()
     {
