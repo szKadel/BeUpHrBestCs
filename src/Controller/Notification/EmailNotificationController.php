@@ -27,7 +27,7 @@ class EmailNotificationController
     {
         $this->setNotificationsSettings();
 
-        if ($this->notification == null)
+        if ($this->notification == null || $vacation->getType()->getName() == "Plan urlopowy")
         {
             return;
         }
@@ -35,6 +35,11 @@ class EmailNotificationController
         if($this->notification ->isNotificateDepartmentModOnCreatedVacation())
         {
             $this->emailService->sendNotificationToModofDepartment($vacation);
+        }
+
+        if($this->notification ->isNotificateUserOnVacationRequestAccept())
+        {
+            $this->emailService->sendNotificationToOwnerOnCreate($vacation);
         }
     }
 

@@ -96,13 +96,21 @@ class VacationStateProcessor implements ProcessorInterface
                     }
 
                     if($data->getStatus()->getName() == "Odrzucony") {
+
+                        if ($this->notificationRepository->getNotificationsSettings(
+                        )?->isNotificateAdminOnAcceptVacation()) {
+                            $this->emailService->sendNotificationEmailToAllAdmin($data);
+                        }
+
                         if($this -> security -> isGranted('ROLE_KADR')){
                             throw new BadRequestException('Brak Uprawnień');
                         }
                     }
-
-                    if($this->notificationRepository ->getNotificationsSettings()?->isNotificateAdminOnAcceptVacation()) {
-                        $this->emailService -> sendNotificationEmailToAllAdmin($data);
+                    if($data->getStatus()->getName() == "Oczekujacy") {
+                        if ($this->notificationRepository->getNotificationsSettings(
+                        )?->isNotificateAdminOnAcceptVacation()) {
+                            $this->emailService->sendNotificationEmailToAllAdmin($data);
+                        }
                     }
                 }
 
