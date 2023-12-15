@@ -9,6 +9,7 @@ use App\Entity\Company\Employee;
 use App\Repository\DepartmentRepository;
 use App\Repository\EmployeeRepository;
 use App\Service\BitrixService;
+use App\Service\Vacation\VacationLimitsAdd;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,7 +24,8 @@ class BitrixController extends AbstractController
         BitrixService $bitrixService,
         EmployeePresist $employeePresist,
         DepartmentRepository $departmentRepository,
-        EmployeeRepository $userRepository
+        EmployeeRepository $userRepository,
+        VacationLimitsAdd $vacationLimitsAdd
     ):JsonResponse
     {
         $result = $bitrixService->call('user.get',[]);
@@ -37,6 +39,7 @@ class BitrixController extends AbstractController
 
         $start = 0;
         $i = 0;
+
         while($countBatches > 0) {
             $result = $bitrixService->call('user.get?start='.$start, []);
             $final_result[] = 'user.get?start='.$start;
@@ -51,8 +54,10 @@ class BitrixController extends AbstractController
                     $user->setEmail($elemnt["EMAIL"]);
                     $user->setBitrixId($elemnt["ID"]);
                     $user->setDepartment($departmentRepository->findOneByBitrixIdField($elemnt['UF_DEPARTMENT'][0]));
-                    $employeePresist -> add($user);
-
+                    if($user?->getId()) {
+                        $employeePresist->add($user);
+                    }
+                    $vacationLimitsAdd -> addLimitsForNewEmployee($user);
                     $final_result[] = $i++;
                 }
             }

@@ -59,12 +59,12 @@ final class EmployeeSubscriber implements EventSubscriberInterface
         switch ($type->getId())
         {
             case 2:
-                return 26;
+                return 26; // wypoczynkowy
             case 5:
-                return 4;
+                return 4; // Na zadanie 4
             case 8:
+                return 2; // Opieka nad dziezkiem
             case 9:
-            case 15:
                 return 2;
             default:
                 return 0;
