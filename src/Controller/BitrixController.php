@@ -54,10 +54,10 @@ class BitrixController extends AbstractController
                     $user->setEmail($elemnt["EMAIL"]);
                     $user->setBitrixId($elemnt["ID"]);
                     $user->setDepartment($departmentRepository->findOneByBitrixIdField($elemnt['UF_DEPARTMENT'][0]));
+                    $employeePresist->add($user);
                     if($user?->getId()) {
-                        $employeePresist->add($user);
+                        $vacationLimitsAdd->addLimitsForNewEmployee($user);
                     }
-                    $vacationLimitsAdd -> addLimitsForNewEmployee($user);
                     $final_result[] = $i++;
                 }
             }
